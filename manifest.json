@@ -1,0 +1,33 @@
+{
+  "manifest_version": 2,
+  "key": "jnfcafiflcnhihjokebkadknioapkppb",
+  "name": "Chrome Ethereum",
+  "description": "Ethereum for Chrome",
+  "version": "0.1",
+  "background": {
+    "scripts": ["node_modules/web3/dist/web3.js", "background.js"]
+  },
+  "browser_action": {
+    "default_popup": "action.html"
+  },
+  "commands" : {
+    "_execute_browser_action": {
+            "suggested_key": {
+              "mac": "Alt+J",
+              "linux": "Alt+J"
+            }
+          },
+          "initChromeEthereum": {
+            "suggested_key": {
+              "mac": "Command+Shift+E",
+              "linux": "Ctrl+Shift+E"
+            },
+            "description": "Enable Chrome Ethereum"
+          }
+  },
+  "permissions": [
+    "storage",
+    "tabs",
+    "https://*/*"
+  ]
+}
