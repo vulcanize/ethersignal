@@ -86,3 +86,9 @@ option {
 img {
 	vertical-align: middle;
 }
+pre {
+	background: brown;
+	text-align: center;
+	padding: 10px;
+	font-size: 15px;
+}

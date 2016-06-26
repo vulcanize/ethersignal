@@ -103,6 +103,7 @@ app.service('ethereum', function($rootScope, $interval) {
 
 	//subscribe to all new blocks from the Ethereum blockchain
 	//update global network statistics on $rootScope
+	var accounts = null;
 	if(connected) {
 		(function pollNetworkStats() {
 			var latest = web3.eth.filter('latest');
@@ -115,11 +116,13 @@ app.service('ethereum', function($rootScope, $interval) {
 				});
 			});
 		})();
+		
+		accounts = web3.eth.accounts;
 	}
 	return {
 		//make web3 available as a property of this service
 		web3: web3,
-		accounts: web3.eth.accounts
+		accounts: accounts
 		
 
 	};
@@ -141,6 +144,10 @@ app.service('proposalService', ['ethSignalContract', '$q', function(ethSignalCon
 		ethSignalContract.userVotedEvent({}, {fromBlock:1187201,toBlock:'latest'}).get(function(err,evt) {
 			votes = evt;
 		});
+		
+		function mergeData(proposals, votes) {
+			//combine votes and proposals to display results
+		}
 
 		return {
 			proposals: proposals,

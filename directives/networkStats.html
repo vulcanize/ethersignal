@@ -1,5 +1,5 @@
 <div class="stats">
-	<h1>ethSignal <span ng-class="{true: 'good', false: 'bad'}[connectionState]"> {{ connectionStateDisplay }} </span> <span class="network" ng-show="connectionState"> ({{ ethereumNetwork }}) </span> </h1>
+	<h1>etherSignal <span ng-class="{true: 'good', false: 'bad'}[connectionState]"> {{ connectionStateDisplay }} </span> <span class="network" ng-show="connectionState"> ({{ ethereumNetwork }}) </span> </h1>
 	<div ng-show="connectionState">
 		<label> Current Block:      </label> <span class="{{syncState}}"> {{ currentBlock }} </span>
 		<label> Current Block Time: </label> <span class="{{syncState}}"> {{ currentBlockTime }}       </span>

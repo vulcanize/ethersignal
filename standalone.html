@@ -6,12 +6,16 @@
     <!-- <script src="standalone.js"></script> -->
     <script src="ethSignal.js"></script>
     <link rel="stylesheet" href="style.css"></link>
-    <title>ethSignal</title>
+    <title>etherSignal</title>
   </head>
   <body ng-app="ethSignal">
     <div class="content">
 	<network-stats></network-stats>
-	<account-selector></account-selector>
+	<code ng-hide="connectionState">
+		<h1>Please start your local geth node</h1>
+		<pre>geth --rpc --rpccorsdomain="chrome-extension://pgfcgpgggeefgnajgbdojefgdddlgnpi" --rpcapi="db,eth,net,web3,personal" --testnet</pre>
+	</code>
+	<account-selector ng-show="connectionState"></account-selector>
 	<proposals-list></proposals-list>
     </div>
   </body>
