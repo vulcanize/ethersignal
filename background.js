@@ -4,6 +4,11 @@ var web3 = new Web3();
 
 web3.setProvider(new web3.providers.HttpProvider());
 
+var latest = web3.eth.filter('latest');
+latest.watch(function(err,blockHash){
+		
+});	
+
 chrome.commands.onCommand.addListener(function (command) {
   if(command === 'initChromeEthereum')
     chrome.tabs.executeScript(null, {file: "content_script.js"});

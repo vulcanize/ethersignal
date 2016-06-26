@@ -4,6 +4,9 @@
   "name": "Chrome Ethereum",
   "description": "Ethereum for Chrome",
   "version": "0.1",
+  "icons": { "16": "ether16.png",
+           "48": "ether48.png",
+          "128": "ether128.png" },
   "background": {
     "scripts": ["node_modules/web3/dist/web3.js", "background.js"]
   },

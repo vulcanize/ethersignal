@@ -19,5 +19,8 @@
   "bugs": {
     "url": "https://github.com/thebalaa/chrome-ethereum/issues"
   },
-  "homepage": "https://github.com/thebalaa/chrome-ethereum#readme"
+  "homepage": "https://github.com/thebalaa/chrome-ethereum#readme",
+  "dependencies": {
+    "angular": "^1.5.7"
+  }
 }

@@ -1,0 +1,7 @@
+<div class="right-align">
+	<img src="lock.png">
+	<select ng-model="user.defaultAccount">
+		<option value="coinbase">Select Account</option>
+		<option ng-repeat="account in accounts" value="{{account}}">{{ account }}</option>
+	</select>
+</div>

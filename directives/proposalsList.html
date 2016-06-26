@@ -1,0 +1,15 @@
+<div>
+	<ul>
+		<li class="proposal" ng-repeat="proposal in proposals track by $index">
+			<p class="title">{{ proposal[0] }} </p>
+			<span>Submitted by {{proposal[2]}} </span>
+			<p class="description">{{ proposal[1] }}</p>
+			<div class="proposal-action">
+				<button ng-click="vote($index, true)"> Yes </button>
+				<button ng-click="vote($index, false)"> No </button>
+			</div>
+			
+
+		</li>
+	</ul>
+</div>

@@ -1,0 +1,88 @@
+body {
+	background-color: #162023;
+	color: azure;
+}
+
+div.stats {
+	text-align: center;
+	border: 1px solid #abab79;
+	padding: 10px;
+	font-size: 15px;
+}
+div.stats span.good {
+	color: lime;
+}
+div.stats span.bad {
+	color: red;
+}
+div.stats span.warning {
+	color: orange;
+}
+
+li.proposal {
+	border: 1px solid #abab79;
+	padding: 10px;
+	min-height: 140px;
+	padding-left: 40px;
+} 
+ul {
+	list-style-type: none;
+	padding: 0px;
+	margin: 0;
+}
+
+ul li p {
+	margin: 0;
+}
+ul li p.title {
+	font-size: 40px;
+}
+ul li p.description {
+	margin-top: 5px;
+	font-size: 20px;
+}
+ul li span {
+	font-size: 15px;
+	margin-left: 10px;
+}
+
+h1 span {
+	font-size: 14px;
+}
+h1 span.network {
+	color: azure;
+	font-size: 20px;
+}
+div.stats div span {
+	margin-right: 25px;
+}
+
+.right-align {
+	text-align: right;
+}
+select {
+   color: azure;
+   border: 1px solid azure;
+   background: transparent;
+   padding: 5px 5px 5px 5px;
+   font-size: 16px;
+   height: 50px;
+} 
+
+option {
+	color: black;
+}
+.proposal-action {
+	margin-top: 15px;
+}
+.proposal-action button {
+	margin: 10px;
+	width: 100px;
+	height: 50px;
+	background-color: transparent;
+	border: 1px solid azure;
+	color: azure;
+}
+img {
+	vertical-align: middle;
+}
