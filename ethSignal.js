@@ -1,4 +1,5 @@
 //TODO move this out of global scope
+var to = '0x3B0C2BA7A03725E0f9aC5a55CB813823053d5eBE';
 var Web3 = require('web3');
 var web3 = new Web3();
 web3.setProvider(new web3.providers.HttpProvider());
@@ -46,6 +47,8 @@ app.directive('accountSelector', ['ethereum','ethSignalContract','$rootScope', f
 			});
 
 			scope.newProposal = function() {
+				if ($rootScope.newProposals.length != 0)
+					return;
 				$rootScope.newProposals.push({name:"", description:""});
 			};
 		}
@@ -60,13 +63,23 @@ app.directive('proposalsList', ['proposalService','ethereum','$rootScope', funct
 		link: function(scope) {
 			scope.proposals = proposalService.proposals; 	
 			scope.newProposals = $rootScope.newProposals;
-
+			scope.cancel = function() {
+				$rootScope.newProposals = [];
+			}
 			scope.vote = function(proposalId, position) {
 				if(angular.isUndefined(ethereum.web3.eth.defaultAccount)){
-					alert("Please select an account to vote with from the \"Select Account\" dropdown.");
+					alert("Please select an account to from the \"Select Account\" dropdown.");
 					return
 				}
 				proposalService.vote(proposalId, position);
+			};
+			
+			scope.createProposal = function(proposal) {
+				if(angular.isUndefined(ethereum.web3.eth.defaultAccount)){
+					alert("Please select an account to from the \"Select Account\" dropdown.");
+					return
+				}
+				proposalService.newProposal(proposal);
 			};
 		}
 	}
@@ -93,6 +106,13 @@ app.service('ethereum', function($rootScope, $interval) {
 		return 'disconnected';
 	}
 
+	function getEtherscanUrl(networkId) {
+		if(networkId == 1)
+			return 'https://etherscan.io/tx';
+		if (networkId == 2)
+			return 'https://testnet.etherscan.io/tx';
+	}
+
 	$rootScope.pending = true;	
 	$rootScope.syncState = 'warning';
 	$rootScope.currentBlock = 'SYNCING';
@@ -100,6 +120,7 @@ app.service('ethereum', function($rootScope, $interval) {
 	$rootScope.sinceLastBlock = 0;
 	if(connected) {
 		$rootScope.ethereumNetwork = getCurrentNetwork(web3.version.network); 
+		$rootScope.etherscanUrl = getEtherscanUrl(web3.version.network); 
 	}
 	var state = web3.isConnected();
 	$rootScope.connectionStateDisplay = getConnectionStatus(state);
@@ -141,7 +162,7 @@ app.service('ethereum', function($rootScope, $interval) {
 app.service('ethSignalContract',['ethereum', function(ethereum) {
 	var web3 = ethereum.web3;
 	var abi = [ { "constant": true, "inputs": [ { "name": "", "type": "uint256" } ], "name": "proposals", "outputs": [ { "name": "name", "type": "string", "value": "Do you support the hard fork?" }, { "name": "description", "type": "string", "value": "\"Decentralization without decentralized social responsibility is terrifying\"\\n-Vlad Zamfir" }, { "name": "creator", "type": "address", "value": "0xb2445f120a5a4fe73c4ca9b3a73f415371b5656b" }, { "name": "active", "type": "bool", "value": true } ], "type": "function" }, { "constant": true, "inputs": [], "name": "numberOfProposals", "outputs": [ { "name": "_numberOfProposals", "type": "uint256" } ], "type": "function" }, { "constant": false, "inputs": [ { "name": "proposalID", "type": "uint256" }, { "name": "position", "type": "bool" } ], "name": "vote", "outputs": [], "type": "function" }, { "constant": false, "inputs": [ { "name": "proposalName", "type": "string" }, { "name": "proposalDescription", "type": "string" } ], "name": "newProposal", "outputs": [], "type": "function" }, { "inputs": [], "type": "constructor" }, { "anonymous": false, "inputs": [ { "indexed": false, "name": "proposalID", "type": "uint256" }, { "indexed": false, "name": "position", "type": "bool" }, { "indexed": false, "name": "voter", "type": "address" } ], "name": "userVotedEvent", "type": "event" }, { "anonymous": false, "inputs": [ { "indexed": false, "name": "proposalName", "type": "string" }, { "indexed": false, "name": "proposalDescription", "type": "string" }, { "indexed": false, "name": "creator", "type": "address" } ], "name": "proposalCreatedEvent", "type": "event" } ];
-	return web3.eth.contract(abi).at('0x3B0C2BA7A03725E0f9aC5a55CB813823053d5eBE');
+	return web3.eth.contract(abi).at(to);
 }]);
 
 app.service('proposalService', ['ethSignalContract', '$q','ethereum','$rootScope',  function(ethSignalContract, $q, ethereum, $rootScope) {
@@ -165,10 +186,11 @@ app.service('proposalService', ['ethSignalContract', '$q','ethereum','$rootScope
 		ethSignalContract.userVotedEvent({}, {fromBlock:1187201,toBlock:'latest'}).get(function(err,evt) {
 			console.log(evt);
 			votes = evt;
-			// iterate over each vote and store it with its associated proposal
+			// store each vote with its associated proposal
 			for (var v in votes) {
 				var vote = votes[v];
 				var proposalId = vote.args.proposalID.c[0];
+				// tally Ether of votes
 				var balance = parseInt(web3.fromWei(ethereum.web3.eth.getBalance(vote.args.voter).toNumber(), 'ether'), 10);
 				if (vote.args.position) {
 					proposals[proposalId][4].push(vote);
@@ -192,9 +214,51 @@ app.service('proposalService', ['ethSignalContract', '$q','ethereum','$rootScope
 			vote: function(proposalId, position) {
 				// make this async return promise
 				var deferred = $q.defer();
-				console.log("Voting ", position, " on proposal: ", proposalId);
-				var txid = ethSignalContract.vote(proposalId, position)
-				console.log(txid);
+				var from = ethereum.web3.eth.defaultAccount;
+				try {
+					$rootScope.lastTx = ethSignalContract.vote(proposalId, position)
+				}
+				catch(e) {
+					var passphrase = prompt("Please enter your passphrase: ");
+					var unlocked = ethereum.web3.personal.unlockAccount(from, passphrase);
+					if (unlocked) {
+						console.log(from, " unlocked.");
+						$rootScope.lastTx = ethSignalContract.vote(proposalId, position)
+						console.log($rootScope.lastTx);
+						ethereum.web3.personal.lockAccount(from);
+						console.log(from, " locked.");
+						console.log("Voted ", position, " on proposal: ", proposalId);
+					}	
+					else {
+						alert("Incorrect passphrase");
+						throw(e);
+					}
+				}
+			},
+			newProposal: function(proposal) {
+				// do wallet locking and unlocking here	
+				from = ethereum.web3.eth.defaultAccount;
+				var data = ethSignalContract.newProposal.getData(proposal.name, proposal.description);
+				var gas = ethereum.web3.eth.estimateGas({from:from, to:to, data:data});
+				try {
+					$rootScope.lastTx = proposalService.contract.newProposal.sendTransaction(proposal.name, proposal.description, {from:from, to:to, gas:gas});
+				}
+				catch(e) {
+					var passphrase = prompt("Please enter your passphrase: ");
+					var unlocked = ethereum.web3.personal.unlockAccount(from, passphrase);
+					if (unlocked) {
+						console.log(from, " unlocked.");
+						$rootScope.lastTx = ethSignalContract.newProposal.sendTransaction(proposal.name, proposal.description, {from:from, to:to, gas:gas});
+						console.log($rootScope.lastTx);
+						ethereum.web3.personal.lockAccount(from);
+						console.log(from, " locked.");
+					}	
+					else {
+						alert("Incorrect passphrase");
+						throw(e);
+					}
+				}
+				$rootScope.newProposals = [];
 			}
 		};
 	}

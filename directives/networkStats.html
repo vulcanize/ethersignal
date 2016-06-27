@@ -5,4 +5,7 @@
 		<label> Current Block Time: </label> <span class="{{syncState}}"> {{ currentBlockTime }}       </span>
 		<label> Since Last Block:   </label> <span class="{{syncState}}"> {{ sinceLastBlock }} seconds </span>
 	</div>
+	<div>
+		<p ng-show="lastTx">Last Transmission: <a href="{{ etherscanUrl }}/{{ lastTx }}">{{ lastTx }}</a> </p>
+	</div>
 </div>
