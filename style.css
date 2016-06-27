@@ -5,25 +5,26 @@ body {
 
 div.stats {
 	text-align: center;
-	border: 1px solid #abab79;
 	padding: 10px;
 	font-size: 15px;
+	margin: 10px;
 }
-div.stats span.good {
+.good {
 	color: lime;
 }
-div.stats span.bad {
+.bad {
 	color: red;
 }
-div.stats span.warning {
-	color: orange;
+.warning {
+	color: yellow;
 }
 
 li.proposal {
-	border: 1px solid #abab79;
 	padding: 10px;
 	min-height: 140px;
 	padding-left: 40px;
+	margin: 10px;
+	border-top: 1px solid white;
 } 
 ul {
 	list-style-type: none;
@@ -33,13 +34,14 @@ ul {
 
 ul li p {
 	margin: 0;
+	font-size: 40px;
 }
 ul li p.title {
-	font-size: 40px;
+	font-size: 25px;
 }
 ul li p.description {
 	margin-top: 5px;
-	font-size: 20px;
+	font-size: 15px;
 }
 ul li span {
 	font-size: 15px;
@@ -61,12 +63,9 @@ div.stats div span {
 	text-align: right;
 }
 select {
-   color: azure;
-   border: 1px solid azure;
-   background: transparent;
    padding: 5px 5px 5px 5px;
    font-size: 16px;
-   height: 50px;
+   height: 40px;
 } 
 
 option {
@@ -75,12 +74,13 @@ option {
 .proposal-action {
 	margin-top: 15px;
 }
-.proposal-action button {
+button {
 	margin: 10px;
-	width: 100px;
+	width: 180px;
+	font-size: 16px;
 	height: 50px;
 	background-color: transparent;
-	border: 1px solid azure;
+	border: 1px solid azure; 
 	color: azure;
 }
 img {
@@ -89,6 +89,30 @@ img {
 pre {
 	background: brown;
 	text-align: center;
+	padding: 10px;
+	font-size: 15px;
+}
+
+.col-2 {
+	display: inline-block;
+	width: 49%;
+}
+.proposal-results {
+	text-align: right;
+	width:200px;
+	margin: 0 auto;
+	border-left: 4px solid white;
+}
+.proposal-results p span {
+	font-size: 40px;
+}
+
+.input {
+	margin: 10px;
+}
+input {
+	width: 350px;
+	height: 30px;
 	padding: 10px;
 	font-size: 15px;
 }
