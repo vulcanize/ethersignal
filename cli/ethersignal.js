@@ -2,10 +2,11 @@ var esContract = web3.eth.contract([{"constant":false,"inputs":[{"name":"proposa
 var ethersignal = esContract.at('0x88d97abc052ae9ac3f2d034590265ec381f70a9b')
 
 function CalcSignal(proposalHash) {
-	var sigEvs = ethersignal.LogSignal({proposalHash: proposalHash}, {fromBlock: 1780000}).get()
+	var sigEvs = ethersignal.LogSignal({proposalHash: proposalHash}, {fromBlock: 1200000}).get()
 
 	var proMap = {};
 	var antiMap = {};
+	console.log("sigEvs.length: " + sigEvs.length);
 	for(var i = 0; i < sigEvs.length; i++) {
 		var bal = web3.fromWei(web3.eth.getBalance(sigEvs[i].args.addr));
 
