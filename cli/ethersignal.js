@@ -1,12 +1,11 @@
 var esContract = web3.eth.contract([{"constant":false,"inputs":[{"name":"proposalHash","type":"bytes32"},{"name":"pro","type":"bool"}],"name":"setSignal","outputs":[],"type":"function"},{"anonymous":false,"inputs":[{"indexed":true,"name":"proposalHash","type":"bytes32"},{"indexed":false,"name":"pro","type":"bool"},{"indexed":false,"name":"addr","type":"address"}],"name":"LogSignal","type":"event"}]);
-
-var etherSignal = esContract.at('0xb887261e11d3d9cc3b96ef37ad220140c9c5404b')
+var ethersignal = esContract.at('0x88d97abc052ae9ac3f2d034590265ec381f70a9b')
 
 function CalcSignal(proposalHash) {
-	var sigEvs = etherSignal.LogSignal({proposalHash: proposalHash}, {fromoBlock: 1780000}).get()
+	var sigEvs = ethersignal.LogSignal({proposalHash: proposalHash}, {fromBlock: 1780000}).get()
 
-	var proMap = {}
-	var antiMap = {}
+	var proMap = {};
+	var antiMap = {};
 	for(var i = 0; i < sigEvs.length; i++) {
 		var bal = web3.fromWei(web3.eth.getBalance(sigEvs[i].args.addr));
 
