@@ -5,7 +5,7 @@ web3.setProvider(new web3.providers.HttpProvider());
 
 document.addEventListener('DOMContentLoaded', function(){
 	document.getElementById('openPane').addEventListener('click', function(evt) {
-	    chrome.tabs.create({windowId: window.id, url:chrome.extension.getURL('standalone.html')});
+	    chrome.tabs.create({windowId: window.id, url:chrome.extension.getURL('etherSignal.html')});
 	}, false);
 	var latest = web3.eth.filter('latest');
 	latest.watch(function(err,blockHash){

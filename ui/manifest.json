@@ -8,7 +8,7 @@
            "48": "ether48.png",
           "128": "ether128.png" },
   "background": {
-    "scripts": ["node_modules/web3/dist/web3.js", "background.js"]
+    "scripts": []
   },
   "browser_action": {
     "default_popup": "action.html"
@@ -19,13 +19,6 @@
               "mac": "Alt+J",
               "linux": "Alt+J"
             }
-          },
-          "initChromeEthereum": {
-            "suggested_key": {
-              "mac": "Command+Shift+E",
-              "linux": "Ctrl+Shift+E"
-            },
-            "description": "Enable Chrome Ethereum"
           }
   },
   "permissions": [
