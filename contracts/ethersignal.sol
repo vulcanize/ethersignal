@@ -7,6 +7,6 @@ contract EtherSignal {
     	}
     	
     	function () {
-		if(!msg.sender.send(this.balance)){ throw; }
+		throw;
     	}
 }
