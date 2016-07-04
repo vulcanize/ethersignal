@@ -1,6 +1,7 @@
 /* 4096 iters gas burn */
 var esContract = web3.eth.contract([{"constant":false,"inputs":[{"name":"positionHash","type":"bytes32"},{"name":"pro","type":"bool"}],"name":"setSignal","outputs":[],"type":"function"},{"anonymous":false,"inputs":[{"indexed":true,"name":"positionHash","type":"bytes32"},{"indexed":false,"name":"pro","type":"bool"},{"indexed":false,"name":"addr","type":"address"}],"name":"LogSignal","type":"event"}]);
-var ethersignal = esContract.at('0xd99a3c7a4c3e6462af624070e45e0ef2fcaba3c3')
+var ethersignal = esContract.at('0x851a78f09511bf510ad27036f5ff7c8901fdd2e2')
+
 
 function CalcSignal(positionHash) {
 	var proMap = {};
