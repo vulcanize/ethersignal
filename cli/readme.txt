@@ -18,7 +18,11 @@ for a position.
 To Vote on position "0xba32c71348cf21e808067890691aa790486e3a99e628b68cd2bfeb51381bfec1":
 > ethersignal.setSignal("0xba32c71348cf21e808067890691aa790486e3a99e628b68cd2bfeb51381bfec1",true, {from: web3.eth.accounts[0], gas: 300000});
 
-To Tally the signall level for position "0xba32c71348cf21e808067890691aa790486e3a99e628b68cd2bfeb51381bfec1":
+To Tally the signal level for position "0xba32c71348cf21e808067890691aa790486e3a99e628b68cd2bfeb51381bfec1":
 > CalcSignal("0xba32c71348cf21e808067890691aa790486e3a99e628b68cd2bfeb51381bfec1")
+{
+  against: 0,
+  pro: 92.37653959643757
+}
 
 Enjoy.
