@@ -4,14 +4,14 @@
   "name": "Chrome Ethereum",
   "description": "Ethereum for Chrome",
   "version": "0.1",
-  "icons": { "16": "ether16.png",
-           "48": "ether48.png",
-          "128": "ether128.png" },
+  "icons": { "16": "img/ether16.png",
+           "48": "img/ether48.png",
+          "128": "img/ether128.png" },
   "background": {
     "scripts": []
   },
   "browser_action": {
-    "default_popup": "action.html"
+    "default_popup": "browserAction.html"
   },
   "commands" : {
     "_execute_browser_action": {
