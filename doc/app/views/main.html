@@ -1,0 +1,45 @@
+<div class="row" ng-hide="connectionState">
+	<div class="col-sm-12">
+		<div class="page-header">
+			<code>
+				<h1>Please start your local geth node</h1>
+				<pre>geth --rpc --rpccorsdomain="chrome-extension://pgfcgpgggeefgnajgbdojefgdddlgnpi" --rpcapi="db,eth,net,web3,personal" --testnet</pre>
+			</code>
+		</div>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-sm-12">
+		<div class="page-header">
+			<network-stats></network-stats>
+		</div>
+	</div>
+</div>
+
+<proposals-list></proposals-list>
+
+<div class="modal fade" id="photoModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title text-center" id="myModalLabel">{{modalPic.name}}</h4>
+			</div>
+			<div class="modal-body text-center">
+				<img src="{{modalPic.src}}">
+				<form class="form-inline" role="form">
+					<div class="dropdown form-group">
+						<select class="form-control btn btn-primary" ng-model="newTag">
+							<option ng-repeat="(key, value) in tagMenu('drop')" value="{{key}}">{{key}}</option>
+						</select>
+					</div>
+					<div class="form-group">
+						<input type="text" class="form-control" placeholder="New collection" ng-model="newTag">
+					</div>
+					<button type="button" class="btn btn-submit" ng-click="addIt(modalPic)">Add</button>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
