@@ -13,7 +13,14 @@ function ListPositions() {
 		}
 	})
 
-	Object.keys(posMap).map(function(k) { console.log(k + ": " + posMap[k]); });
+	Object.keys(posMap).map(function(k) {
+		console.log("Position CalcSignal(\"" + k + "\");");
+		console.log(" registered by " + posMap[k][2]);
+		console.log(" Title: " + posMap[k][0]);
+		console.log(" Text: " + posMap[k][1]);
+	});
+
+	return true;
 }
 
 function CalcSignal(posAddr) {
