@@ -1,8 +1,30 @@
-//TODO move this out of global scope
-var to = '0x3B0C2BA7A03725E0f9aC5a55CB813823053d5eBE';
 var Web3 = require('web3');
 var web3 = new Web3();
 web3.setProvider(new web3.providers.HttpProvider());
+
+
+// var ethersignalContract = web3.eth.contract([{"constant":false,"inputs":[{"name":"pro","type":"bool"}],"name":"setSignal","outputs":[],"type":"function"},{"constant":false,"inputs":[],"name":"endSignal","outputs":[],"type":"function"},{"inputs":[{"name":"rAddr","type":"address"}],"type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"name":"pro","type":"bool"},{"indexed":false,"name":"addr","type":"address"}],"name":"LogSignal","type":"event"},{"anonymous":false,"inputs":[],"name":"EndSignal","type":"event"}]);
+
+// var positionregistryContract = web3.eth.contract([{"constant":false,"inputs":[{"name":"title","type":"string"},{"name":"text","type":"string"}],"name":"registerPosition","outputs":[],"type":"function"},{"anonymous":false,"inputs":[{"indexed":true,"name":"regAddr","type":"address"},{"indexed":true,"name":"sigAddr","type":"address"},{"indexed":false,"name":"title","type":"string"},{"indexed":false,"name":"text","type":"string"}],"name":"LogPosition","type":"event"}]);
+// var positionregistry = positionregistryContract.at('0x0265a5b822625ca506c474912662617c394bbb66')
+
+// function ListPositions() {
+// 	var posMap = {};
+
+// 	positionregistry.LogPosition({}, {fromBlock: 1200000}, function(error, result){
+// 		if (!error)
+// 		{
+// 			posMap[result.args.sigAddr] = [result.args.title, result.args.text, result.args.regAddr];
+// 		}
+// 	})
+
+// 	Object.keys(posMap).map(function(k) { console.log(k + ": " + posMap[k]); });
+// }
+
+//TODO move this out of global scope
+// var to = positionregistry.address;
+// console.log(positionregistry);
+var to = '0x3B0C2BA7A03725E0f9aC5a55CB813823053d5eBE';
 
 var connected = web3.isConnected();
 console.log("connected " + connected);
