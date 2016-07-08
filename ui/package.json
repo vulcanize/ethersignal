@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/thebalaa/chrome-ethereum#readme",
   "dependencies": {
-    "angular": "^1.5.7"
+    "angular": "^1.5.7",
+    "web3": "^0.17.0-alpha"
   }
 }
