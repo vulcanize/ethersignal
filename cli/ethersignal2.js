@@ -16,12 +16,13 @@ function ListPositions() {
 	Object.keys(posMap).map(function(k) { console.log(k + ": " + posMap[k]); });
 }
 
-/*
-function CalcSignal(positionHash) {
+function CalcSignal(posAddr) {
 	var proMap = {};
 	var antiMap = {};
 
-	ethersignal.LogSignal({positionHash: positionHash}, {fromBlock: 1200000}, function(error, result){
+	var ethersignal = ethersignalContract.at(posAddr);
+
+	ethersignal.LogSignal({}, {fromBlock: 1200000}, function(error, result){
 		if (!error)
 		{
 			if (result.args.pro) {
@@ -50,4 +51,3 @@ function CalcSignal(positionHash) {
 
 	return {pro: totalPro, against: totalAgainst}
 }
-*/
