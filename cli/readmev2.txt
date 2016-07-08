@@ -41,7 +41,7 @@ Positions filtered for being under the minDeposit of 1: 2
 true
 
 === As you can see above, in order to get the current signal levels for a position
-you can simple cut and paste the CalcSignal(); portion of the output from
+you can simply cut and paste the CalcSignal(); portion of the output from
 ListPositions():
 > CalcSignal("0x953521cfe06b48d65b64ae864abb4c808312885e");
 {
@@ -69,7 +69,7 @@ Title: title
 Text: text
 
 The signal address is what is within CalcSignal(); so above it is
-"0xcdda0a8fe9a7a844c9d8611b2cadfe36b4bb438f". To vote simple run the
+"0xcdda0a8fe9a7a844c9d8611b2cadfe36b4bb438f". To vote simply run the
 following command, where true means to vote for the signal, and false
 would mean to vote against the signal:
 > SetSignal("0xcdda0a8fe9a7a844c9d8611b2cadfe36b4bb438f", true);
