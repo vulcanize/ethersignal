@@ -52,6 +52,14 @@ ListPositions():
 === In order to register a position you can use the following contract method:
 > positionregistry.registerPosition("title", "text", {from: web3.eth.accounts[0], gas: 300000});
 
+=== If you would like to optionally submit a deposit into your position
+in order to distinguish it from others you can do the following (note
+your deposit will be returned when you withdraw the position):
+> web3.eth.sendTransaction({from: web3.eth.accounts[0], to:"0xcdda0a8fe9a7a844c9d8611b2cadfe36b4bb438f", value: web3.toWei(0.1, "ether")})
+
+=== You may withdraw you position and reclaim your deposit as follows
+> WithdrawPosition("0xcdda0a8fe9a7a844c9d8611b2cadfe36b4bb438f");
+
 === In order to vote on a position, you will need to use the positions
 signal address. Take the following signal as an example:
 Position CalcSignal("0xcdda0a8fe9a7a844c9d8611b2cadfe36b4bb438f");

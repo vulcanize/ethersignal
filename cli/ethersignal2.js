@@ -3,6 +3,15 @@ var ethersignalContract = web3.eth.contract([{"constant":false,"inputs":[{"name"
 var positionregistryContract = web3.eth.contract([{"constant":false,"inputs":[{"name":"title","type":"string"},{"name":"text","type":"string"}],"name":"registerPosition","outputs":[],"type":"function"},{"anonymous":false,"inputs":[{"indexed":true,"name":"regAddr","type":"address"},{"indexed":true,"name":"sigAddr","type":"address"},{"indexed":false,"name":"title","type":"string"},{"indexed":false,"name":"text","type":"string"}],"name":"LogPosition","type":"event"}]);
 var positionregistry = positionregistryContract.at('0x0265a5b822625ca506c474912662617c394bbb66')
 
+function WithdrawPosition(sigAddr) {
+	var ethersignal = ethersignalContract.at(sigAddr);
+
+	ethersignal.endSignal();
+
+	return true;
+}
+
+
 function SetSignal(sigAddr, pro) {
 	var ethersignal = ethersignalContract.at(sigAddr);
 
