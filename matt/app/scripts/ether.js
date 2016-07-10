@@ -94,6 +94,10 @@ app.directive('proposalsList', ['proposalService','ethereum','$rootScope', funct
 		link: function(scope) {
 			scope.proposals = proposalService.proposals; 	
 			scope.newProposals = $rootScope.newProposals;
+			scope.percentage = function(a, b){
+				return a + b;
+			}
+
 			scope.cancel = function() {
 				$rootScope.newProposals = [];
 			}
@@ -231,6 +235,11 @@ app.service('proposalService', ['ethSignalContract', '$q','ethereum','$rootScope
 					proposals[proposalId][5].push(vote);
 					proposals[proposalId][7] += balance;
 				}
+				var percent = calcPercent( proposals[proposalId][6], proposals[proposalId][7] );
+				console.log(proposals[proposalId]);
+				console.log(percent);
+				proposals[proposalId][10] = percent
+
 				// console.log(proposalId,balance, vote.args.position, vote.args.voter, vote.blockNumber);
 			}	
 		});
@@ -238,10 +247,18 @@ app.service('proposalService', ['ethSignalContract', '$q','ethereum','$rootScope
 		function mergeData(proposals, votes) {
 			//combine votes and proposals to display results
 		}
-
+		function calcPercent(A, B){
+			var res = []
+			res[0] = (A * 100.0 / (A + B))
+			res[1] = (B * 100.0 / (A + B))
+			return res 
+		}
 		return {
 			proposals: proposals,
 			votes: votes,
+			percentage: function(inP){
+				console.log(out);
+			},
 			vote: function(proposalId, position) {
 				// make this async return promise
 				var deferred = $q.defer();
