@@ -1,5 +1,6 @@
 <div class="stats">
-	<h1>etherSignal <span ng-class="{true: 'good', false: 'bad'}[connectionState]"> {{ connectionStateDisplay }} </span> <span class="network" ng-show="connectionState"> ({{ ethereumNetwork }}) </span> </h1>
+	<h1><img src="images/ethersignal-logo.svg" style="max-height:39px">EtherSignal</h1>
+	<h4>Status: <span ng-class="{true: 'good', false: 'bad'}[connectionState]"> {{ connectionStateDisplay }} </span> <span class="network" ng-show="connectionState"> ({{ ethereumNetwork }}) </span> </h4>
 	<div ng-show="connectionState">
 		<label>Current Block:</label> <span class="{{syncState}}"> {{ currentBlock }} </span><br>
 		<label>Current Block Time:</label> <span class="{{syncState}}"> {{ currentBlockTime }} </span><br>

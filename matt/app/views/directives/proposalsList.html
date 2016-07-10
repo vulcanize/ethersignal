@@ -22,11 +22,11 @@
 				<br>
 				<div>
 					<button type="button" id="testBtn" class="btn btn-success glyphicon glyphicon-thumbs-up" ng-click="vote($index, true)"> {{ proposal[6] }} Ether</button>
-					<button type="button" id="testBtnDown" class="btn btn-warn glyphicon glyphicon-thumbs-down" ng-click="vote($index, false)"> {{ proposal[7] }} Ether</button>
+					<button type="button" id="testBtnDown" class="btn btn-danger glyphicon glyphicon-thumbs-down" ng-click="vote($index, false)"> {{ proposal[7] }} Ether</button>
 				</div>
 				<br>
 				<div class="progress">
-					<div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: {{ proposal[10][0] }}%">{{ proposal[10][0] }} %
+					<div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: {{ proposal[10][0] }}%">{{ proposal[10][0] }}%
 					</div>
 
 				</div>
@@ -34,7 +34,7 @@
 					<div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: {{ proposal[10][1] }}%"> {{ proposal[10][1] }}%
 					</div>
 				</div>
-				<p class="description submitted">Submitted by {{proposal[2]}}</p>
+				<p class="description light">Submitted by {{proposal[2]}}</p>
 			</li>
 		</ul>
 	</div>

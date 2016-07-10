@@ -88,3 +88,12 @@ body {
   padding:0 0 0 1em;
 }
 
+.light {
+  color: #999;
+}
+
+.navbar-brand>img.logoImg {
+  max-width: 17px;
+  display: inline-block;
+}
+
