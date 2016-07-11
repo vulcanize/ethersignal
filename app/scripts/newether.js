@@ -163,7 +163,7 @@ app.service('ethereum', function($rootScope, $interval, $timeout) {
 	}, 1000);
 
 	$interval(function() {
-		newState = web3.isConnected();
+		var newState = web3.isConnected();
 		if (newState != connected){
 			$rootScope.$emit('connectionStateChanged', connected);
 			connected = newState;
@@ -203,6 +203,7 @@ app.service('proposalService', ['ethSignalContract', '$q','ethereum','$rootScope
 	positionregistry.LogPosition({}, {fromBlock:1200000}).get(function(err,evt) {
 		if (err) console.warn()
 
+		var obj;
 		for (obj in evt) {
 			// console.log(evt[obj]);
 			getSigList(evt[obj])
@@ -225,6 +226,7 @@ app.service('proposalService', ['ethSignalContract', '$q','ethereum','$rootScope
 			var proMap = {};
 			var antiMap = {};
 
+			var obj;
 			for (obj in evt){
 				if (evt[obj].args.pro) {
 					proMap[evt[obj].args.addr] = 1;
