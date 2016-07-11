@@ -132,26 +132,29 @@ app.service('proposalService', ['ethSignalContract', '$q','ethereum','$rootScope
 			vote: function(proposalId, position) {
 				// make this async return promise
 				var deferred = $q.defer();
-				var from = ethereum.web3.eth.defaultAccount;
+				var from = ethereum.web3.eth.accounts[0];
 				try {
-					$rootScope.lastTx = ethSignalContract.vote(proposalId, position)
+					$rootScope.lastTx = ethSignalContract.vote.sendTransaction(proposalId, position, {from:from});
 				}
 				catch(e) {
-					var passphrase = prompt("Please enter your passphrase: ");
-					var unlocked = ethereum.web3.personal.unlockAccount(from, passphrase);
-					if (unlocked) {
-						console.log(from, " unlocked.");
-						$rootScope.lastTx = ethSignalContract.vote(proposalId, position)
-						console.log($rootScope.lastTx);
-						ethereum.web3.personal.lockAccount(from);
-						console.log(from, " locked.");
-						console.log("Voted ", position, " on proposal: ", proposalId);
-					}
-					else {
-						alert("Incorrect passphrase");
-						throw(e);
-					}
+					if(!isMist) {
+						var passphrase = prompt("Please enter your passphrase: ");
+						var unlocked = ethereum.web3.personal.unlockAccount(from, passphrase);
+						if (unlocked) {
+							console.log(from, " unlocked.");
+							$rootScope.lastTx = ethSignalContract.vote(proposalId, position)
+							console.log($rootScope.lastTx);
+							ethereum.web3.personal.lockAccount(from);
+							console.log(from, " locked.");
+							console.log("Voted ", position, " on proposal: ", proposalId);
+						}
+						else {
+							alert("Incorrect passphrase");
+							throw(e);
+						}
 				}
+						console.log(e);
+			}
 			},
 			newProposal: function(proposal) {
 				// do wallet locking and unlocking here

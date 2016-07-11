@@ -58,7 +58,7 @@ app.directive('proposalsList', ['proposalService','ethereum','$rootScope', funct
 				$rootScope.newProposals = [];
 			}
 			scope.vote = function(proposalId, position) {
-				if(angular.isUndefined(ethereum.web3.eth.defaultAccount)){
+				if(angular.isUndefined(ethereum.web3.eth.defaultAccount) && !isMist){
 					alert("Please select an account to from the \"Select Account\" dropdown.");
 					return
 				}
@@ -66,7 +66,7 @@ app.directive('proposalsList', ['proposalService','ethereum','$rootScope', funct
 			};
 
 			scope.createProposal = function(proposal) {
-				if(angular.isUndefined(ethereum.web3.eth.defaultAccount)){
+				if(angular.isUndefined(ethereum.web3.eth.defaultAccount) && !isMist){
 					alert("Please select an account to from the \"Select Account\" dropdown.");
 					return
 				}
