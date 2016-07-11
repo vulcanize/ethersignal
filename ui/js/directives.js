@@ -25,6 +25,7 @@ app.directive('accountSelector', ['ethereum','ethSignalContract','$rootScope', f
 		restrict: 'E',
 		templateUrl: 'directives/accountSelector.html',
 		link: function(scope) {
+			scope.isMist = isMist;
 			var contract = ethSignalContract;
 			scope.accounts = ethereum.accounts;
 			scope.user = {defaultAccount:'coinbase'};

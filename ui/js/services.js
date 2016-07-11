@@ -46,7 +46,7 @@ app.service('ethereum', function($rootScope, $interval, $timeout) {
               $rootScope.$emit("connectionStateChange", state);
           }
   	}, 7500);
-  }, 3000);
+  }, 500);
 
 	//subscribe to all new blocks from the Ethereum blockchain
 	//update global network statistics on $rootScope
