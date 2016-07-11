@@ -13,6 +13,7 @@
   },
   "repository": {},
   "devDependencies": {
+    "grunt-cli": "1.2.0",
     "grunt": "^0.4.5",
     "grunt-autoprefixer": "^2.0.0",
     "grunt-build-control": "^0.6.2",
