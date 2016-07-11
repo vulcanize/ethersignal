@@ -1,6 +1,15 @@
-var Web3 = require('web3');
-var web3 = new Web3();
-web3.setProvider(new web3.providers.HttpProvider());
+var isMist = typeof web3 !== 'undefined';
+if(typeof web3 !== 'undefined' && typeof Web3 !== 'undefined') {
+        // If there's a web3 library loaded, then make your own web3
+        web3 = new Web3(web3.currentProvider);
+    } else if (typeof Web3 !== 'undefined') {
+        // If there isn't then set a provider
+        web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+    } else if(typeof web3 == 'undefined' && typeof Web3 == 'undefined') {
+        var Web3 = require('web3');
+        web3 = new Web3(new Web3.providers.HttpProvider("htts://signal.ether.ai/proxy"));
+        // If there is neither then this isn't an ethereum browser
+    }
 
 // var ethersignalContract = web3.eth.contract([{"constant":false,"inputs":[{"name":"pro","type":"bool"}],"name":"setSignal","outputs":[],"type":"function"},{"constant":false,"inputs":[],"name":"endSignal","outputs":[],"type":"function"},{"inputs":[{"name":"rAddr","type":"address"}],"type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"name":"pro","type":"bool"},{"indexed":false,"name":"addr","type":"address"}],"name":"LogSignal","type":"event"},{"anonymous":false,"inputs":[],"name":"EndSignal","type":"event"}]);
 
@@ -26,9 +35,6 @@ var to = '0x3B0C2BA7A03725E0f9aC5a55CB813823053d5eBE';
 
 var connected = web3.isConnected();
 console.log("connected " + connected);
-
-var getBalance = web3.eth.getBalance(web3.eth.accounts[0])
-
 
 app.directive('networkStats', ['ethereum', '$interval','$rootScope',  function(ethereum, $interval, $rootScope) {
 	return {
