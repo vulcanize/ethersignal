@@ -1,5 +1,6 @@
 console.log("newether");
 var isMist = typeof web3 !== 'undefined';
+var obj = obj || "";
 
 if (typeof web3 !== 'undefined' && typeof Web3 !== 'undefined') {
     // If there's a web3 library loaded, then make your own web3
@@ -162,6 +163,7 @@ app.service('ethereum', function($rootScope, $interval, $timeout) {
 		$rootScope.connectionState = connected;
 	}, 1000);
 
+	var newState;
 	$interval(function() {
 		var newState = web3.isConnected();
 		if (newState != connected){
