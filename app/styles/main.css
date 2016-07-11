@@ -97,3 +97,11 @@ body {
   display: inline-block;
 }
 
+#voteButtons .btn span {
+  font-family: sans-serif;
+}
+.stats {
+  color:#666;
+  font-size: .8em;
+}
+
