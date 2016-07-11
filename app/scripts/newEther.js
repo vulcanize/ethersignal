@@ -28,7 +28,7 @@ var connected = web3.isConnected();
 app.directive('networkStats', ['ethereum', '$interval','$rootScope',  function(ethereum, $interval, $rootScope) {
 	return {
 		restrict: 'E',
-		templateUrl: 'views/directives/networkStats.html',
+		templateUrl: 'views/networkStats.html',
 		link: function(scope) {
 			$interval(function() {
 			
@@ -50,7 +50,7 @@ app.directive('networkStats', ['ethereum', '$interval','$rootScope',  function(e
 app.directive('accountSelector', ['ethereum','ethSignalContract','$rootScope', function(ethereum, ethSignalContract, $rootScope) {
 	return {
 		restrict: 'E',
-		templateUrl: 'views/directives/accountSelector.html',
+		templateUrl: 'views/accountSelector.html',
 		link: function(scope) {
 			var contract = ethSignalContract;
 			scope.accounts = ethereum.accounts;
@@ -76,7 +76,7 @@ app.directive('proposalsList', ['proposalService','ethereum','$rootScope', funct
 
 	return {
 		restrict: 'E',
-		templateUrl: 'views/directives/proposalsList.html',
+		templateUrl: 'views/proposalsList.html',
 		link: function(scope) {
 			scope.proposals = proposalService.proposals; 	
 			scope.newProposals = $rootScope.newProposals;
