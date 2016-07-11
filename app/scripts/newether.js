@@ -1,7 +1,6 @@
-console.log("newether");
 var isMist = typeof web3 !== 'undefined';
 var obj = obj || "";
-
+var web3;
 if (typeof web3 !== 'undefined' && typeof Web3 !== 'undefined') {
     // If there's a web3 library loaded, then make your own web3
     web3 = new Web3(web3.currentProvider);
@@ -56,10 +55,10 @@ app.directive('accountSelector', ['ethereum','ethSignalContract','$rootScope', f
 			scope.accounts = ethereum.accounts;
 			scope.user = {defaultAccount:'coinbase'};
 			scope.$watch('user.defaultAccount', function(newVal, oldVal) {
-				console.log(contract);
+				//console.log(contract);
 				if(oldVal == newVal)
 					return;
-				console.log("Setting defaultAccount to: ", newVal);
+				//console.log("Setting defaultAccount to: ", newVal);
 				ethereum.web3.eth.defaultAccount = newVal;
 			});
 
@@ -199,16 +198,21 @@ app.service('proposalService', ['ethSignalContract', '$q','ethereum','$rootScope
 	// console.log("proposalService");
 	// $('#loadingModal').modal('show');
 
-	var positions = []
+	var minDeposit = 0;
+	var positions = [];
 	$rootScope.newProposals = [];
 
 	positionregistry.LogPosition({}, {fromBlock:1200000}).get(function(err,evt) {
 		if (err) console.warn()
 
 		var obj;
+		var dep;
 		for (obj in evt) {
-			// console.log(evt[obj]);
-			getSigList(evt[obj])
+			dep = web3.fromWei(web3.eth.getBalance(evt[obj].args.sigAddr));
+			if (dep >= minDeposit) {
+				// console.log(evt[obj]);
+				getSigList(evt[obj])
+			}
 		}
 	})
 
@@ -268,17 +272,17 @@ app.service('proposalService', ['ethSignalContract', '$q','ethereum','$rootScope
 		var percent = calcPercent( totalPro, totalAgainst );	
 
 		positions.push({title: input.args.title, desc: input.args.text, regAddr: input.args.regAddr, pro: Math.round(totalPro), against: Math.round(totalAgainst), percent: percent, sigAddr: input.args.sigAddr})
-		console.log(positions);
+		// console.log(positions);
 	}
 
 	return {
 		proposals: positions,
 		// votes: votes,
 		percentage: function(inP){
-			console.log(out);
+			//console.log(out);
 		},
 		vote: function(posSigAddr, proBool) {
-			console.log(posSigAddr, proBool);
+			//console.log(posSigAddr, proBool);
 			var from = ethereum.web3.eth.defaultAccount;
 			var etherSig = ethersignalContract.at(posSigAddr)
 			try {
@@ -292,14 +296,14 @@ app.service('proposalService', ['ethSignalContract', '$q','ethereum','$rootScope
 		},
 		newProposal: function(proposal) {
 
-			console.log(ethereum.web3.eth.defaultAccount);
+			//console.log(ethereum.web3.eth.defaultAccount);
 			from = ethereum.web3.eth.defaultAccount;
 			// var data = ethSignalContract.newProposal.getData(proposal.name, proposal.description);
 			var data = positionregistry.registerPosition.getData(proposal.name, proposal.description);
-			console.log("data ", data);
+			//console.log("data ", data);
 			var gas = ethereum.web3.eth.estimateGas({from:from, to:to, data:data});
 
-			console.log("gas: ", gas);
+			//console.log("gas: ", gas);
 			try {
 				$rootScope.lastTx = positionregistry.registerPosition.sendTransaction(proposal.name, proposal.description, {from:from, to:to, gas:gas});
 			}
