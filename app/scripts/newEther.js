@@ -1,3 +1,4 @@
+console.log("newether");
 var isMist = typeof web3 !== 'undefined';
 
 if (typeof web3 !== 'undefined' && typeof Web3 !== 'undefined') {
@@ -26,7 +27,7 @@ var connected = web3.isConnected();
 app.directive('networkStats', ['ethereum', '$interval','$rootScope',  function(ethereum, $interval, $rootScope) {
 	return {
 		restrict: 'E',
-		templateUrl: '/views/directives/networkStats.html',
+		templateUrl: 'new-networkstats.html',
 		link: function(scope) {
 			$interval(function() {
 			
@@ -48,7 +49,7 @@ app.directive('networkStats', ['ethereum', '$interval','$rootScope',  function(e
 app.directive('accountSelector', ['ethereum','ethSignalContract','$rootScope', function(ethereum, ethSignalContract, $rootScope) {
 	return {
 		restrict: 'E',
-		templateUrl: '/views/directives/accountSelector.html',
+		templateUrl: 'new-accountselector.html',
 		link: function(scope) {
 			var contract = ethSignalContract;
 			scope.accounts = ethereum.accounts;
@@ -74,7 +75,7 @@ app.directive('proposalsList', ['proposalService','ethereum','$rootScope', funct
 
 	return {
 		restrict: 'E',
-		templateUrl: '/views/directives/proposalsList.html',
+		templateUrl: 'new-proposalslist.html',
 		link: function(scope) {
 			scope.proposals = proposalService.proposals; 	
 			scope.percentage = function(a, b){
