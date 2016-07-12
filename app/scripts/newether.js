@@ -87,7 +87,8 @@ app.directive('proposalsList', ['proposalService','ethereum','$uibModal','$rootS
 			}
 			scope.vote = function(proposalId, position) {
 				if(angular.isUndefined(ethereum.web3.eth.defaultAccount)){
-					alert("Please select an account to from the \"Select Account\" dropdown.");
+					$rootScope.alerts = [{ type: 'danger', msg: 'Please select an account' },];
+					// alert("Please select an account to from the \"Select Account\" dropdown.");
 					return
 				}
 				proposalService.vote(proposalId, position);
@@ -95,7 +96,7 @@ app.directive('proposalsList', ['proposalService','ethereum','$uibModal','$rootS
 
 			scope.createProposal = function(proposal) {
 				if(angular.isUndefined(ethereum.web3.eth.defaultAccount)){
-					alert("Cannot find an account.");
+					$rootScope.alerts = [{ type: 'danger', msg: 'Cannot find an account.' },];
 					return
 				}
 				if (proposal.name == ""){
@@ -198,7 +199,7 @@ app.service('ethSignalContract',['ethereum', function(ethereum) {
 }]);
 
 
-app.service('proposalService', ['ethSignalContract', '$q','ethereum','$rootScope',  function(ethSignalContract, $q, ethereum, $rootScope) {
+app.service('proposalService', ['ethSignalContract', '$q','ethereum','$rootScope', function(ethSignalContract, $q, ethereum, $rootScope) {
 	// get all the questions
 	// console.log("proposalService");
 	// $('#loadingModal').modal('show');
@@ -294,8 +295,9 @@ app.service('proposalService', ['ethSignalContract', '$q','ethereum','$rootScope
 			catch(e) {
 				console.log("Error submitting signal");
 				console.log(e);
-				alert("Error submitting signal")
+				$rootScope.alerts.push({ type: 'danger', msg: 'Error sending signal' });
 			}
+			$rootScope.alerts.push({ type: 'success', msg: 'Signal sent!' });
 		},
 		newProposal: function(proposal) {
 
@@ -313,8 +315,9 @@ app.service('proposalService', ['ethSignalContract', '$q','ethereum','$rootScope
 			catch(e) {
 				console.log("Error submitting position");
 				console.log(e);
-				alert("Error submitting position")
+				$rootScope.alerts.push({ type: 'danger', msg: 'Error sending position' });
 			}
+			$rootScope.alerts.push({ type: 'success', msg: 'Position sent!' });
 			$('#submitPositionModal').modal('hide')
 			$rootScope.newProposals = [];
 		}
