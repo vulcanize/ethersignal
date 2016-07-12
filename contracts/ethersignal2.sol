@@ -18,6 +18,12 @@ contract EtherSignal {
 		EndSignal();
 	}
 
+	function withdraw(uint amount) {
+		if (msg.sender != regAddr) { throw; }
+		if (amount > this.balance) { throw; }
+		if (!msg.sender.send(amount)) { throw; }
+	}
+
 	function () {
 		if (msg.sender != regAddr) { throw; }
 		// accept deposit only from the address which registered the position
