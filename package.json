@@ -9,7 +9,8 @@
   "dependencies": {
     "express": "^4.13.3",
     "gzippo": "^0.2.0",
-    "karma": "^0.13.15"
+    "karma": "^0.13.22",
+    "karma-coverage": "^1.1.0"
   },
   "repository": {},
   "devDependencies": {

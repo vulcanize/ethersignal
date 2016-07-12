@@ -11,10 +11,6 @@
 
 app.controller('MainCtrl', function ($scope) {
     
-    $scope.questions = [
-        {id: 'question1', name: 'Should we hard fork?'},
-        {id: 'question2', name: 'Is Ether awesome?'},
-        {id: 'question3', name: 'Bro, do you even blockchain?'}
-    ];
-
+    $scope.title = "EtherSignal"
+   
   });

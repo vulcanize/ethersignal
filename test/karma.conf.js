@@ -8,8 +8,8 @@ module.exports = function(config) {
 
   config.set({
     preprocessors: {
-      // '**/*.html': ['ng-html2js']
-      'views/**/*.html': 'html2js'
+      '**/*.html': ['ng-html2js']
+      // 'views/**/*.html': 'html2js'
     },
 
     // enable / disable watching file and executing tests whenever any file changes
@@ -41,6 +41,7 @@ module.exports = function(config) {
       'bower_components/web3/dist/web3.js',
       'bower_components/web3/dist/web3.min.js',
       'bower_components/angular-bootstrap/ui-bootstrap-tpls.js',
+      'bower_components/blanket/dist/qunit/blanket.js',
       'bower_components/angular-mocks/angular-mocks.js',
       // endbower
       "app/scripts/**/*.js",
