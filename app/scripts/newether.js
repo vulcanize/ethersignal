@@ -200,9 +200,6 @@ app.service('ethSignalContract',['ethereum', function(ethereum) {
 }]);
 
 
-
-var allThings = {};
-
 app.service('proposalService', ['ethSignalContract', '$q','ethereum','$rootScope',  function(ethSignalContract, $q, ethereum, $rootScope) {
 	// get all the questions
 	// console.log("proposalService");
@@ -232,16 +229,10 @@ app.service('proposalService', ['ethSignalContract', '$q','ethereum','$rootScope
 
 	function getSigList(input){
 		var address = input.args.sigAddr
-		allThings[address] = {}
-		allThings[address].raw = input
-
 		// console.log("getSigList", address);
 		var etherSig = ethersignalContract.at(address)
 		etherSig.LogSignal({}, {fromBlock:1200000}).get(function(err,evt) {
 			if (err) console.warn("warning")
-
-			// $('#loadingModal').modal('hide')
-			allThings[address].sigList = evt
 
 			var proMap = {};
 			var antiMap = {};

@@ -7,6 +7,11 @@ module.exports = function(config) {
   'use strict';
 
   config.set({
+    preprocessors: {
+      // '**/*.html': ['ng-html2js']
+      'views/**/*.html': 'html2js'
+    },
+
     // enable / disable watching file and executing tests whenever any file changes
     autoWatch: true,
 
@@ -40,7 +45,8 @@ module.exports = function(config) {
       // endbower
       "app/scripts/**/*.js",
       "test/mock/**/*.js",
-      "test/spec/**/*.js"
+      "test/spec/**/*.js",
+      'app/**/*.html',
     ],
 
     // list of files / patterns to exclude
@@ -65,7 +71,8 @@ module.exports = function(config) {
     // Which plugins to enable
     plugins: [
       "karma-phantomjs-launcher",
-      "karma-jasmine"
+      "karma-jasmine",
+      'karma-ng-html2js-preprocessor'
     ],
 
     // Continuous Integration mode
@@ -84,5 +91,28 @@ module.exports = function(config) {
     // },
     // URL root prevent conflicts with the site root
     // urlRoot: '_karma_'
+    ngHtml2JsPreprocessor: {
+      // strip this from the file path
+      // stripPrefix: 'views/',
+      // stripSuffix: '.ext',
+      // prepend this to the
+      // prependPrefix: 'app/',
+
+      // or define a custom transform function
+      // - cacheId returned is used to load template
+      //   module(cacheId) will return template at filepath
+      // moduleName: function (htmlPath, originalPath) {
+      //   return htmlPath.split('/')[0];
+      // },
+
+      // - setting this option will create only a single module that contains templates
+      //   from all the files, so you can load them all with module('foo')
+      // - you may provide a function(htmlPath, originalPath) instead of a string
+      //   if you'd like to generate modules dynamically
+      //   htmlPath is a originalPath stripped and/or prepended
+      //   with all provided suffixes and prefixes
+      // moduleName: 'foo'
+      // moduleName: "my.templates"
+    }    
   });
 };
