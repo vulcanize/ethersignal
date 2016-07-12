@@ -154,25 +154,28 @@ app.service('ethereum', function($rootScope, $interval, $timeout) {
 	$rootScope.currentBlock = 'SYNCING';
 	$rootScope.currentBlockTime = 'SYNCING';
 	$rootScope.sinceLastBlock = 0;
+	var polling = false;
 	var newState;
 	$interval(function() {
 		var newState = web3.isConnected();
 		if (newState != connected){
-			$rootScope.$emit('connectionStateChanged', newState);
 			connected = newState;
       if(connected){
         web3.eth.defaultAccount = web3.eth.accounts[0];
-        (function pollNetworkStats() {
-  				var latest = web3.eth.filter('latest');
-  				latest.watch(function(err,blockHash){
-  					web3.eth.getBlock(blockHash, false, function(err, block) {
-  						$rootScope.pending = false;
-  						$rootScope.currentBlock = block.number;
-  						$rootScope.currentBlockTime = utcSecondsToString(block.timestamp);
-  						$rootScope.sinceLastBlock = -1;
-  					});
-  				});
-  			})();
+	if(!polling){
+		polling = true;
+		(function pollNetworkStats() {
+					var latest = web3.eth.filter('latest');
+					latest.watch(function(err,blockHash){
+						web3.eth.getBlock(blockHash, false, function(err, block) {
+							$rootScope.pending = false;
+							$rootScope.currentBlock = block.number;
+							$rootScope.currentBlockTime = utcSecondsToString(block.timestamp);
+							$rootScope.sinceLastBlock = -1;
+						});
+					});
+				})();
+	}
   			$rootScope.ethereumNetwork = getCurrentNetwork(web3.version.network);
   			$rootScope.etherscanUrl = getEtherscanUrl(web3.version.network);
   			$rootScope.$emit('connectionStateChanged', connected);
