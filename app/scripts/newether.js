@@ -63,16 +63,15 @@ app.directive('accountSelector', ['ethereum','ethSignalContract','$rootScope', f
 			});
 
 			scope.newProposal = function() {
+				$rootScope.newProposals = []
 				$('#submitPositionModal').modal('show')
-				if ($rootScope.newProposals.length != 0)
-					return;
 				$rootScope.newProposals.push({name:"", description:""});
 			};
 		}
 	}
 }]);
 
-app.directive('proposalsList', ['proposalService','ethereum','$rootScope', function(proposalService, ethereum, $rootScope) {
+app.directive('proposalsList', ['proposalService','ethereum','$uibModal','$rootScope', function(proposalService, ethereum, $uibModal, $rootScope) {
 
 	return {
 		restrict: 'E',
@@ -83,7 +82,8 @@ app.directive('proposalsList', ['proposalService','ethereum','$rootScope', funct
 				return a + b;
 			}
 			scope.cancel = function() {
-				$rootScope.newProposals = [];
+				$('#submitPositionModal').modal('hide')
+				// $rootScope.newProposals = [];
 			}
 			scope.vote = function(proposalId, position) {
 				if(angular.isUndefined(ethereum.web3.eth.defaultAccount)){
@@ -94,10 +94,10 @@ app.directive('proposalsList', ['proposalService','ethereum','$rootScope', funct
 			};
 
 			scope.createProposal = function(proposal) {
-				// if(angular.isUndefined(ethereum.web3.eth.defaultAccount)){
-				// 	alert("Cannot find an account.");
-				// 	return
-				// }
+				if(angular.isUndefined(ethereum.web3.eth.defaultAccount)){
+					alert("Cannot find an account.");
+					return
+				}
 				if (proposal.name == ""){
 					scope.invalidForm = true;
 					return
@@ -154,28 +154,25 @@ app.service('ethereum', function($rootScope, $interval, $timeout) {
 	$rootScope.currentBlock = 'SYNCING';
 	$rootScope.currentBlockTime = 'SYNCING';
 	$rootScope.sinceLastBlock = 0;
-	var polling = false;
 	var newState;
 	$interval(function() {
 		var newState = web3.isConnected();
 		if (newState != connected){
+			$rootScope.$emit('connectionStateChanged', newState);
 			connected = newState;
       if(connected){
         web3.eth.defaultAccount = web3.eth.accounts[0];
-	if(!polling){
-		polling = true;
-		(function pollNetworkStats() {
-					var latest = web3.eth.filter('latest');
-					latest.watch(function(err,blockHash){
-						web3.eth.getBlock(blockHash, false, function(err, block) {
-							$rootScope.pending = false;
-							$rootScope.currentBlock = block.number;
-							$rootScope.currentBlockTime = utcSecondsToString(block.timestamp);
-							$rootScope.sinceLastBlock = -1;
-						});
-					});
-				})();
-	}
+        (function pollNetworkStats() {
+  				var latest = web3.eth.filter('latest');
+  				latest.watch(function(err,blockHash){
+  					web3.eth.getBlock(blockHash, false, function(err, block) {
+  						$rootScope.pending = false;
+  						$rootScope.currentBlock = block.number;
+  						$rootScope.currentBlockTime = utcSecondsToString(block.timestamp);
+  						$rootScope.sinceLastBlock = -1;
+  					});
+  				});
+  			})();
   			$rootScope.ethereumNetwork = getCurrentNetwork(web3.version.network);
   			$rootScope.etherscanUrl = getEtherscanUrl(web3.version.network);
   			$rootScope.$emit('connectionStateChanged', connected);
@@ -214,25 +211,24 @@ app.service('proposalService', ['ethSignalContract', '$q','ethereum','$rootScope
 	var minDeposit = 0;
 	var positions = [];
 	$rootScope.newProposals = [];
-$rootScope.$on('connectionStateChanged', function(evt, connected){
-if(connected)
-  getPositions();
-})
-  function getPositions() {
-  	positionregistry.LogPosition({}, {fromBlock:1200000}).get(function(err,evt) {
-  		if (err) console.warn()
+	$rootScope.$on('connectionStateChanged', function(evt, connected){
+		if(connected) getPositions();
+	})
+	function getPositions() {
+		positionregistry.LogPosition({}, {fromBlock:1200000}).get(function(err,evt) {
+			if (err) console.warn()
 
-  		var obj;
-  		var dep;
-  		for (obj in evt) {
-  			dep = web3.fromWei(web3.eth.getBalance(evt[obj].args.sigAddr));
-  			if (dep >= minDeposit) {
-  				// console.log(evt[obj]);
-  				getSigList(evt[obj])
-  			}
-  		}
-  	});
-  }
+			var obj;
+			var dep;
+			for (obj in evt) {
+				dep = web3.fromWei(web3.eth.getBalance(evt[obj].args.sigAddr));
+				if (dep >= minDeposit) {
+					// console.log(evt[obj]);
+					getSigList(evt[obj])
+				}
+			}
+		});
+	}
 
 	function getSigList(input){
 		var address = input.args.sigAddr
@@ -330,13 +326,9 @@ if(connected)
 				console.log(e);
 				alert("Error submitting position")
 			}
+			$('#submitPositionModal').modal('hide')
 			$rootScope.newProposals = [];
 		}
 	}
 
 }]);
-
-
-function registerPosition(){
-
-}

@@ -79,17 +79,13 @@
 
 <script type="text/ng-template" id="new-proposalslist.html">
 
-
-
 <div class="modal fade" id="submitPositionModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 <h4 class="modal-title" id="myModalLabel2">Create New Position</h4>
             </div>
-
             <div class="modal-body">
                 <div class="row proposal" ng-repeat="proposal in newProposals track by $index">
                     <div class="col-sm-12">
@@ -110,13 +106,9 @@
                     </div>
                 </div>
             </div>
-
-
         </div>
     </div>
 </div>
-
-
 
 <div class="panel panel-default">
   <div class="panel-heading"><network-stats ng-hide="isMist"></network-stats></div>
@@ -162,6 +154,7 @@
     <script src="bower_components/angular-route/angular-route.js"></script>
     <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
     <script src="bower_components/angular-touch/angular-touch.js"></script>
+    <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
     <script src="bower_components/bignumber.js/bignumber.js"></script>
     <script src="bower_components/crypto-js/index.js"></script>
     <script src="bower_components/web3/dist/web3.js"></script>

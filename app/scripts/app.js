@@ -17,7 +17,8 @@ var app = angular.module('nohoApp', [
     'ngResource',
     'ngRoute',
     'ngSanitize',
-    'ngTouch'
+    'ngTouch',
+    'ui.bootstrap'
   ]);
 app.config(function ($routeProvider) {
   $routeProvider
