@@ -17,6 +17,11 @@ git stash save -u
 git checkout gh-pages -f 
 git rm `git ls-tree -r HEAD --name-only | grep -v .git`
 
+
+npm install
+node_modules/bower/bin/bower install
+node_modules/grunt-cli/bin/grunt --force
+
 mv dist/* .
 rm -rf dist
 
