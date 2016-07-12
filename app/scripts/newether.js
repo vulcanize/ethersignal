@@ -63,6 +63,7 @@ app.directive('accountSelector', ['ethereum','ethSignalContract','$rootScope', f
 			});
 
 			scope.newProposal = function() {
+				$('#submitPositionModal').modal('show')
 				if ($rootScope.newProposals.length != 0)
 					return;
 				$rootScope.newProposals.push({name:"", description:""});
@@ -81,7 +82,6 @@ app.directive('proposalsList', ['proposalService','ethereum','$rootScope', funct
 			scope.percentage = function(a, b){
 				return a + b;
 			}
-
 			scope.cancel = function() {
 				$rootScope.newProposals = [];
 			}
@@ -94,15 +94,32 @@ app.directive('proposalsList', ['proposalService','ethereum','$rootScope', funct
 			};
 
 			scope.createProposal = function(proposal) {
-				if(angular.isUndefined(ethereum.web3.eth.defaultAccount)){
-					alert("Cannot find an account.");
+				// if(angular.isUndefined(ethereum.web3.eth.defaultAccount)){
+				// 	alert("Cannot find an account.");
+				// 	return
+				// }
+				if (proposal.name == ""){
+					scope.invalidForm = true;
 					return
 				}
+				scope.invalidForm = false;
 				proposalService.newProposal(proposal);
 			};
 		}
 	}
 }]);
+
+app.directive('showErrors', function() {
+    return {
+      restrict: 'A',
+      link: function(scope, el) {
+        el.bind('blur', function() {
+          var valid = // is valid logic
+          el.toggleClass('has-error', valid);
+        });
+      }
+    }
+});
 
 app.service('ethereum', function($rootScope, $interval, $timeout) {
 	// TODO graceful connection handling
@@ -194,10 +211,10 @@ app.service('proposalService', ['ethSignalContract', '$q','ethereum','$rootScope
 	var minDeposit = 0;
 	var positions = [];
 	$rootScope.newProposals = [];
-  $rootScope.$on('connectionStateChanged', function(evt, connected){
-    if(connected)
-      getPositions();
-  })
+$rootScope.$on('connectionStateChanged', function(evt, connected){
+if(connected)
+  getPositions();
+})
   function getPositions() {
   	positionregistry.LogPosition({}, {fromBlock:1200000}).get(function(err,evt) {
   		if (err) console.warn()
