@@ -7,10 +7,10 @@ if (typeof web3 !== 'undefined' && typeof Web3 !== 'undefined') {
 } else if (typeof Web3 !== 'undefined') {
     // If there isn't then set a provider
     web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
-} else if(typeof web3 == 'undefined' && typeof Web3 == 'undefined') {
-    var Web3 = require('web3');
-    web3 = new Web3(new Web3.providers.HttpProvider("https://signal.ether.ai/proxy"));
-    // If there is neither then this isn't an ethereum browser
+    if(!web3.isConnected()){
+      var Web3 = require('web3');
+      web3 = new Web3(new Web3.providers.HttpProvider("https://signal.ether.ai/proxy"));
+    }
 }
 
 
@@ -21,7 +21,7 @@ var positionregistry = positionregistryContract.at('0x0265a5b822625ca506c4749126
 
 var to = '0x0265a5b822625ca506c474912662617c394bbb66';
 
-var connected = web3.isConnected();
+var connected = false;
 
 
 app.directive('networkStats', ['ethereum', '$interval','$rootScope',  function(ethereum, $interval, $rootScope) {
@@ -30,18 +30,18 @@ app.directive('networkStats', ['ethereum', '$interval','$rootScope',  function(e
 		templateUrl: 'new-networkstats.html',
 		link: function(scope) {
 			$interval(function() {
-			
+
 				if ($rootScope.pending)
-					return;	
+					return;
 				else if (scope.sinceLastBlock <= 20)
 					scope.syncState = 'good';
 				else if (scope.sinceLastBlock > 20 && scope.sinceLastBlock < 60)
 					scope.syncState = 'warning';
-				else 
+				else
 					scope.syncState = 'bad';
 				scope.sinceLastBlock += 1;
 			}, 1000);
-			
+
 		}
 	}
 }]);
@@ -68,7 +68,7 @@ app.directive('accountSelector', ['ethereum','ethSignalContract','$rootScope', f
 				$rootScope.newProposals.push({name:"", description:""});
 			};
 		}
-	}	
+	}
 }]);
 
 app.directive('proposalsList', ['proposalService','ethereum','$rootScope', function(proposalService, ethereum, $rootScope) {
@@ -77,7 +77,7 @@ app.directive('proposalsList', ['proposalService','ethereum','$rootScope', funct
 		restrict: 'E',
 		templateUrl: 'new-proposalslist.html',
 		link: function(scope) {
-			scope.proposals = proposalService.proposals; 	
+			scope.proposals = proposalService.proposals;
 			scope.percentage = function(a, b){
 				return a + b;
 			}
@@ -92,7 +92,7 @@ app.directive('proposalsList', ['proposalService','ethereum','$rootScope', funct
 				}
 				proposalService.vote(proposalId, position);
 			};
-			
+
 			scope.createProposal = function(proposal) {
 				if(angular.isUndefined(ethereum.web3.eth.defaultAccount)){
 					alert("Cannot find an account.");
@@ -106,7 +106,7 @@ app.directive('proposalsList', ['proposalService','ethereum','$rootScope', funct
 
 app.service('ethereum', function($rootScope, $interval, $timeout) {
 	// TODO graceful connection handling
-
+  $rootScope.isMist = isMist;
 	// convert block timestamps into human readable strings
 	function utcSecondsToString(timestamp) {
 		var date = new Date(0);
@@ -132,49 +132,42 @@ app.service('ethereum', function($rootScope, $interval, $timeout) {
 			return 'https://testnet.etherscan.io/tx';
 	}
 
-	// TODO improve
-	web3.eth.defaultAccount = web3.eth.accounts[0];
-
-	$rootScope.pending = true;	
+	$rootScope.pending = true;
 	$rootScope.syncState = 'warning';
 	$rootScope.currentBlock = 'SYNCING';
 	$rootScope.currentBlockTime = 'SYNCING';
 	$rootScope.sinceLastBlock = 0;
-	$timeout(function() {
-		connected = web3.isConnected();
-		if(connected) {
-			$rootScope.ethereumNetwork = getCurrentNetwork(web3.version.network); 
-			$rootScope.etherscanUrl = getEtherscanUrl(web3.version.network); 
-			$rootScope.$emit('connectionStateChanged', connected);
-			(function pollNetworkStats() {
-				var latest = web3.eth.filter('latest');
-				latest.watch(function(err,blockHash){
-					web3.eth.getBlock(blockHash, false, function(err, block) {
-						$rootScope.pending = false;
-						$rootScope.currentBlock = block.number;
-						$rootScope.currentBlockTime = utcSecondsToString(block.timestamp);
-						$rootScope.sinceLastBlock = -1;
-					});
-				});
-			})();
-		}
-		$rootScope.connectionStateDisplay = getConnectionStatus(connected);
-		$rootScope.connectionState = connected;
-	}, 1000);
-
 	var newState;
 	$interval(function() {
 		var newState = web3.isConnected();
 		if (newState != connected){
-			$rootScope.$emit('connectionStateChanged', connected);
+			$rootScope.$emit('connectionStateChanged', newState);
 			connected = newState;
+      if(connected){
+        web3.eth.defaultAccount = web3.eth.accounts[0];
+        (function pollNetworkStats() {
+  				var latest = web3.eth.filter('latest');
+  				latest.watch(function(err,blockHash){
+  					web3.eth.getBlock(blockHash, false, function(err, block) {
+  						$rootScope.pending = false;
+  						$rootScope.currentBlock = block.number;
+  						$rootScope.currentBlockTime = utcSecondsToString(block.timestamp);
+  						$rootScope.sinceLastBlock = -1;
+  					});
+  				});
+  			})();
+  			$rootScope.ethereumNetwork = getCurrentNetwork(web3.version.network);
+  			$rootScope.etherscanUrl = getEtherscanUrl(web3.version.network);
+  			$rootScope.$emit('connectionStateChanged', connected);
+      }
+		$rootScope.connectionStateDisplay = getConnectionStatus(connected);
+		$rootScope.connectionState = connected;
 		}
-	}, 7500);
+	}, 1000);
 
 	//subscribe to all new blocks from the Ethereum blockchain
 	//update global network statistics on $rootScope
 	var accounts = null;
-	accounts = web3.eth.accounts[0];
 	return {
 		//make web3 available as a property of this service
 		web3: web3,
@@ -201,20 +194,25 @@ app.service('proposalService', ['ethSignalContract', '$q','ethereum','$rootScope
 	var minDeposit = 0;
 	var positions = [];
 	$rootScope.newProposals = [];
+  $rootScope.$on('connectionStateChanged', function(evt, connected){
+    if(connected)
+      getPositions();
+  })
+  function getPositions() {
+  	positionregistry.LogPosition({}, {fromBlock:1200000}).get(function(err,evt) {
+  		if (err) console.warn()
 
-	positionregistry.LogPosition({}, {fromBlock:1200000}).get(function(err,evt) {
-		if (err) console.warn()
-
-		var obj;
-		var dep;
-		for (obj in evt) {
-			dep = web3.fromWei(web3.eth.getBalance(evt[obj].args.sigAddr));
-			if (dep >= minDeposit) {
-				// console.log(evt[obj]);
-				getSigList(evt[obj])
-			}
-		}
-	})
+  		var obj;
+  		var dep;
+  		for (obj in evt) {
+  			dep = web3.fromWei(web3.eth.getBalance(evt[obj].args.sigAddr));
+  			if (dep >= minDeposit) {
+  				// console.log(evt[obj]);
+  				getSigList(evt[obj])
+  			}
+  		}
+  	});
+  }
 
 	function getSigList(input){
 		var address = input.args.sigAddr
@@ -242,20 +240,20 @@ app.service('proposalService', ['ethSignalContract', '$q','ethereum','$rootScope
 					antiMap[evt[obj].args.addr] = 1;
 				}
 			}
-			CalcSignal(proMap, antiMap, input)	
-		})	
+			CalcSignal(proMap, antiMap, input)
+		})
 	}
 
 	function calcPercent(A, B){
 		var res = []
 		res[0] = Math.round(A * 100.0 / (A + B))
 		res[1] = Math.round(B * 100.0 / (A + B))
-		return res 
-	}	
+		return res
+	}
 
 	function CalcSignal(proMap, antiMap, input) {
 		var totalPro = 0;
-		var totalAgainst = 0;		
+		var totalAgainst = 0;
 		// call getBalance just once per address
 		Object.keys(proMap).map(function(a) {
 			var bal = web3.fromWei(web3.eth.getBalance(a));
@@ -269,7 +267,7 @@ app.service('proposalService', ['ethSignalContract', '$q','ethereum','$rootScope
 
 		// console.log(totalPro);
 		// console.log(totalAgainst);
-		var percent = calcPercent( totalPro, totalAgainst );	
+		var percent = calcPercent( totalPro, totalAgainst );
 
 		positions.push({title: input.args.title, desc: input.args.text, regAddr: input.args.regAddr, pro: Math.round(totalPro), against: Math.round(totalAgainst), percent: percent, sigAddr: input.args.sigAddr})
 		// console.log(positions);
@@ -313,7 +311,7 @@ app.service('proposalService', ['ethSignalContract', '$q','ethereum','$rootScope
 				alert("Error submitting position")
 			}
 			$rootScope.newProposals = [];
-		}		
+		}
 	}
 
 }]);
@@ -322,4 +320,3 @@ app.service('proposalService', ['ethSignalContract', '$q','ethereum','$rootScope
 function registerPosition(){
 
 }
-

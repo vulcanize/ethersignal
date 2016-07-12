@@ -18,7 +18,7 @@
 </div>
 
 <div class="panel panel-default">
-	<div class="panel-heading"><network-stats></network-stats></div>
+	<div class="panel-heading"><network-stats ng-hide="isMist"></network-stats></div>
 	<div class="row">
 		<div class="col-sm-12">
 			<ul class="list-group">
@@ -32,9 +32,9 @@
 					</div>
 					<br>
 					<div class="progress">
-						<div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: {{ proposal['percent'][0] }}%">Yay {{ proposal['percent'][0] }}% 
+						<div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: {{ proposal['percent'][0] }}%">Yay {{ proposal['percent'][0] }}%
 						</div>
-						<div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: {{ proposal['percent'][1] }}%">Nay {{ proposal['percent'][1] }}% 
+						<div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: {{ proposal['percent'][1] }}%">Nay {{ proposal['percent'][1] }}%
 						</div>
 
 					</div>

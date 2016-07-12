@@ -15,7 +15,7 @@
 	<hr class="m-y-2">
 	<!-- <p>It uses utility classes for typography and spacing to space content out within the larger container.</p> -->
 	<p class="lead">
-		<button type="button" class="btn btn-primary btn-lg" ng-click="newProposal()">Submit a position</button>
+		<button ng-show="connectionState" type="button" class="btn btn-primary btn-lg" ng-click="newProposal()">Submit a position</button>
 </div>
 
 
@@ -31,14 +31,13 @@
 				<h4 class="modal-title" id="myModalLabel2">Please enter a password</h4>
 				</div>
 				<div class="modal-body">
-					
+
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
 					<button type="button" class="btn btn-primary">Submit</button>
-				</div>	
+				</div>
 
 		</div>
 	</div>
 </div>
-
