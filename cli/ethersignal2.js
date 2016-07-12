@@ -13,16 +13,18 @@ function WithdrawPosition(sigAddr) {
 
 function WithdrawFromPosition(sigAddr, amount) {
 	var ethersignal = ethersignalContract.at(sigAddr);
+	var gas = ethersignal.withdraw.estimateGas(web3.toWei(amount)) * 2;
 
-	ethersignal.withdraw(web3.toWei(amount), {from: web3.eth.accounts[0], gas: 300000});
+	ethersignal.withdraw(web3.toWei(amount), {from: web3.eth.accounts[0], gas: gas});
 
 	return true;
 }
 
 function SetSignal(sigAddr, pro) {
 	var ethersignal = ethersignalContract.at(sigAddr);
+	var gas = ethersignal.setSignal.estimateGas(pro);
 
-	ethersignal.setSignal(pro, {from: web3.eth.accounts[0], gas: 300000});
+	ethersignal.setSignal(pro, {from: web3.eth.accounts[0], gas: gas});
 
 	return true;
 }
