@@ -148,42 +148,40 @@ app.service('ethereum', function($rootScope, $interval, $timeout) {
 		if (networkId == 2)
 			return 'https://testnet.etherscan.io/tx';
 	}
+	// get blockchain stats to display to the user
+        function watchNetworkStats() {
+		var latest = web3.eth.filter('latest');
+		latest.watch(function(err,blockHash){
+			web3.eth.getBlock(blockHash, false, function(err, block) {
+				$rootScope.pending = false;
+				$rootScope.currentBlock = block.number;
+				$rootScope.currentBlockTime = utcSecondsToString(block.timestamp);
+				$rootScope.sinceLastBlock = -1;
+			});
+		});
+	}
 
 	$rootScope.pending = true;
 	$rootScope.syncState = 'warning';
 	$rootScope.currentBlock = 'SYNCING';
 	$rootScope.currentBlockTime = 'SYNCING';
 	$rootScope.sinceLastBlock = 0;
-	var newState;
 	$interval(function() {
 		var newState = web3.isConnected();
 		if (newState != connected){
 			$rootScope.$emit('connectionStateChanged', newState);
+			if(newState){
+				if(!$rootScope.isMist) watchNetworkStats();
+				web3.eth.defaultAccount = web3.eth.accounts[0];
+				$rootScope.ethereumNetwork = getCurrentNetwork(web3.version.network);
+				$rootScope.etherscanUrl = getEtherscanUrl(web3.version.network);
+		      	}
+			$rootScope.connectionStateDisplay = getConnectionStatus(newState);
+			$rootScope.connectionState = newState;
 			connected = newState;
-      if(connected){
-        web3.eth.defaultAccount = web3.eth.accounts[0];
-        (function pollNetworkStats() {
-  				var latest = web3.eth.filter('latest');
-  				latest.watch(function(err,blockHash){
-  					web3.eth.getBlock(blockHash, false, function(err, block) {
-  						$rootScope.pending = false;
-  						$rootScope.currentBlock = block.number;
-  						$rootScope.currentBlockTime = utcSecondsToString(block.timestamp);
-  						$rootScope.sinceLastBlock = -1;
-  					});
-  				});
-  			})();
-  			$rootScope.ethereumNetwork = getCurrentNetwork(web3.version.network);
-  			$rootScope.etherscanUrl = getEtherscanUrl(web3.version.network);
-  			$rootScope.$emit('connectionStateChanged', connected);
-      }
-		$rootScope.connectionStateDisplay = getConnectionStatus(connected);
-		$rootScope.connectionState = connected;
 		}
 	}, 1000);
 
-	//subscribe to all new blocks from the Ethereum blockchain
-	//update global network statistics on $rootScope
 	var accounts = null;
 	return {
 		//make web3 available as a property of this service
