@@ -24,4 +24,3 @@ git add .
 VERSION=`git rev-parse $BRANCH`
 echo "Making commit..."
 git commit -m"From branch $BRANCH commit $VERSION"
-git push origin HEAD
