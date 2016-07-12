@@ -11,15 +11,8 @@
 # fi
 
 BRANCH=`git rev-parse --abbrev-ref HEAD`
-# ugh
 echo "stashing current branch, 'git stash pop' after push to retrieve."
 git stash save -u
-
-# Just in case
-npm install
-
-node_modules/bower/bin/bower install
-node_modules/grunt-cli/bin/grunt --force
 
 git checkout gh-pages -f 
 git rm `git ls-tree -r HEAD --name-only | grep -v .git`
@@ -27,8 +20,8 @@ git rm `git ls-tree -r HEAD --name-only | grep -v .git`
 mv dist/* .
 rm -rf dist
 
-git add *
-#BRANCH=$1
+git add .
 VERSION=`git rev-parse $BRANCH`
 echo "Making commit..."
 git commit -m"From branch $BRANCH commit $VERSION"
+git push origin HEAD
