@@ -18,7 +18,8 @@ var app = angular.module('nohoApp', [
     'ngRoute',
     'ngSanitize',
     'ngTouch',
-    'ui.bootstrap'
+    'ui.bootstrap',
+    'angular-scroll-animate'
   ]);
 app.config(function ($routeProvider) {
   $routeProvider

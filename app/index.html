@@ -9,10 +9,12 @@
     <!-- build:css(.) styles/vendor.css -->
     <!-- bower:css -->
     <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="bower_components/animate.css/animate.css" />
     <!-- endbower -->
     <!-- endbuild -->
     <!-- build:css(.tmp) styles/main.css -->
     <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="bower_components/animate.css/animate.min.css">
     <link rel="stylesheet" href="styles/main.css">
     <!-- endbuild -->
   </head>
@@ -131,7 +133,7 @@
         </div>
         <div class="col-sm-12">
             <ul class="list-group">
-                <li class="list-group-item proposal" ng-repeat="proposal in proposals track by $index">
+                <li class="list-group-item proposal not-visible" ng-repeat="proposal in proposals track by $index" when-visible="animateElementIn" when-not-visible="animateElementOut" >
                     <h3 class="">{{ proposal['title'] }}</h3>
                     <p class="description">{{ proposal['desc'] }}</p>
                     <br>
@@ -172,6 +174,7 @@
     <script src="bower_components/web3/dist/web3.min.js"></script>
     <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
     <script src="bower_components/blanket/dist/qunit/blanket.js"></script>
+    <script src="bower_components/angular-scroll-animate/dist/angular-scroll-animate.js"></script>
     <!-- endbower -->
     <!-- endbuild -->
 

@@ -202,8 +202,15 @@ app.service('ethSignalContract',['ethereum', function(ethereum) {
 app.service('proposalService', ['ethSignalContract', '$q','ethereum','$rootScope', function(ethSignalContract, $q, ethereum, $rootScope) {
 	// get all the questions
 	// console.log("proposalService");
-	// $('#loadingModal').modal('show');
 
+	$rootScope.animateElementIn = function($el) {
+	    $el.removeClass('not-visible');
+	    $el.addClass('animated fadeIn'); // this example leverages animate.css classes
+	};
+  	$rootScope.animateElementOut = function($el) {
+   		// $el.addClass('not-visible');
+    	// $el.removeClass('fadeIn');
+	}
 	var minDeposit = 0;
 	var positions = [];
 	$rootScope.newProposals = [];

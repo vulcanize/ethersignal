@@ -42,6 +42,7 @@ module.exports = function(config) {
       'bower_components/web3/dist/web3.min.js',
       'bower_components/angular-bootstrap/ui-bootstrap-tpls.js',
       'bower_components/blanket/dist/qunit/blanket.js',
+      'bower_components/angular-scroll-animate/dist/angular-scroll-animate.js',
       'bower_components/angular-mocks/angular-mocks.js',
       // endbower
       "app/scripts/**/*.js",
