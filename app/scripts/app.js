@@ -30,8 +30,8 @@ app.config(function ($routeProvider) {
       templateUrl: 'views/about.html',
       controller: 'AboutCtrl'
     })
-    .when('/contact', {
-      templateUrl: 'views/contact.html',
+    .when('/cliquickstart', {
+      templateUrl: 'views/cliquickstart.html',
       controller: 'AboutCtrl'
     })
     .otherwise({
