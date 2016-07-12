@@ -201,7 +201,6 @@ app.service('ethSignalContract',['ethereum', function(ethereum) {
 
 app.service('proposalService', ['ethSignalContract', '$q','ethereum','$rootScope', function(ethSignalContract, $q, ethereum, $rootScope) {
 	// get all the questions
-	// console.log("proposalService");
 
 	$rootScope.animateElementIn = function($el) {
 	    $el.removeClass('not-visible');
