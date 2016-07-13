@@ -36,7 +36,7 @@ function ListPositions(minDeposit) {
 	positionregistry.LogPosition({}, {fromBlock: 1200000}, function(error, result){
 		if (!error)
 		{
-			posMap[result.args.sigAddr] = [result.args.title, result.args.text, result.args.regAddr];
+			posMap[result.args.sigAddr] = [result.args.title, result.args.text, result.args.regAddr, result.blockNumber];
 		}
 	})
 
@@ -48,7 +48,7 @@ function ListPositions(minDeposit) {
 
 		if (deposit >= minDeposit)
 		{
-			console.log("\nPosition CalcSignal(\"" + k + "\");");
+			console.log("\nPosition CalcSignal(\"" + k + "\"," + posMap[k][3] + ");");
 			console.log(" registered by " + posMap[k][2]);
 			console.log(" eth deposit: " + deposit);
 			console.log("Title: " + posMap[k][0]);
@@ -63,13 +63,13 @@ function ListPositions(minDeposit) {
 	return true;
 }
 
-function CalcSignal(posAddr) {
+function CalcSignal(posAddr, startBlock) {
 	var proMap = {};
 	var antiMap = {};
 
 	var ethersignal = ethersignalContract.at(posAddr);
 
-	ethersignal.LogSignal({}, {fromBlock: 1200000}, function(error, result){
+	ethersignal.LogSignal({}, {fromBlock: startBlock}, function(error, result){
 		if (!error)
 		{
 			if (result.args.pro) {

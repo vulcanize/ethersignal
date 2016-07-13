@@ -205,10 +205,10 @@ app.service('proposalService', ['ethSignalContract', '$q','ethereum','$rootScope
 	$rootScope.animateElementIn = function($el) {
 	    $el.removeClass('not-visible');
 	    $el.addClass('animated fadeIn'); // this example leverages animate.css classes
-	};
-  	$rootScope.animateElementOut = function($el) {
-   		// $el.addClass('not-visible');
-    	// $el.removeClass('fadeIn');
+	}
+	$rootScope.animateElementOut = function($el) {
+		// $el.addClass('not-visible');
+		// $el.removeClass('fadeIn');
 	}
 	var minDeposit = 0;
 	var positions = [];
@@ -236,7 +236,7 @@ app.service('proposalService', ['ethSignalContract', '$q','ethereum','$rootScope
 		var address = input.args.sigAddr
 		// console.log("getSigList", address);
 		var etherSig = ethersignalContract.at(address)
-		etherSig.LogSignal({}, {fromBlock:1200000}).get(function(err,evt) {
+		etherSig.LogSignal({}, {fromBlock:input.blockNumber}).get(function(err,evt) {
 			if (err) console.warn("warning")
 
 			var proMap = {};
