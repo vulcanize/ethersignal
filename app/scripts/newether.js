@@ -281,6 +281,7 @@ app.service('proposalService', ['ethSignalContract', '$q','ethereum','$rootScope
 		var totalPro = 0;
 		var totalAgainst = 0;
 		var isMine = false;
+		var iHaveSignaled = false;
 		// call getBalance just once per address
 		Object.keys(proMap).map(function(a) {
 			var bal = web3.fromWei(web3.eth.getBalance(a));
@@ -288,9 +289,12 @@ app.service('proposalService', ['ethSignalContract', '$q','ethereum','$rootScope
 			antiMap[a] = antiMap[a] * bal;
 
 			for (idx in web3.eth.accounts) {
-				if (web3.eth.accounts[idx] === a) { isMine = true; }
+				if (web3.eth.accounts[idx] === a) { iHaveSignaled = true; }
 			}
 		});
+		for (idx in web3.eth.accounts) {
+			if (web3.eth.accounts[idx] === input.args.regAddr) { isMine = true; }
+		}
 
 		// sum the pro and anti account values
 		Object.keys(proMap).map(function(a) { totalPro += parseFloat(proMap[a]); });
@@ -300,7 +304,7 @@ app.service('proposalService', ['ethSignalContract', '$q','ethereum','$rootScope
 		// console.log(totalAgainst);
 		var percent = calcPercent( totalPro, totalAgainst );
 
-		positions.push({title: input.args.title, desc: input.args.text, regAddr: input.args.regAddr, pro: Math.round(totalPro), against: Math.round(totalAgainst), percent: percent, sigAddr: input.args.sigAddr, deposit: dep, time: block.timestamp, isMine: isMine})
+		positions.push({title: input.args.title, desc: input.args.text, regAddr: input.args.regAddr, pro: Math.round(totalPro), against: Math.round(totalAgainst), percent: percent, sigAddr: input.args.sigAddr, deposit: dep, time: block.timestamp, iHaveSignaled: iHaveSignaled, isMine: isMine})
 		console.log(positions);
 	}
 
