@@ -288,10 +288,12 @@ app.service('proposalService', ['ethSignalContract', '$q','ethereum','$rootScope
 			proMap[a] = proMap[a] * bal;
 			antiMap[a] = antiMap[a] * bal;
 
+			var idx;
 			for (idx in web3.eth.accounts) {
 				if (web3.eth.accounts[idx] === a) { iHaveSignaled = true; }
 			}
 		});
+		var idx;
 		for (idx in web3.eth.accounts) {
 			if (web3.eth.accounts[idx] === input.args.regAddr) { isMine = true; }
 		}
