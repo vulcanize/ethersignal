@@ -111,7 +111,7 @@
 <div class="panel panel-default">
     <div class="panel-heading">
         <network-stats ng-hide="isMist"></network-stats>
-        
+
         <div class="btn-group" uib-dropdown is-open="status.isopen">
             <button id="single-button" type="button" class="btn btn-sm btn-default" uib-dropdown-toggle ng-disabled="disabled">
                 Filter<span class="caret"></span>
@@ -138,7 +138,7 @@
         </div>
         <div class="col-sm-12">
             <ul class="list-group">
-                <li class="list-group-item proposal not-visible" ng-repeat="proposal in proposals | orderBy: reverseTime" when-visible="animateElementIn" when-not-visible="animateElementOut" >
+                <li class="list-group-item proposal not-visible" ng-repeat="proposal in proposals | orderBy: reverseTime  | filter: 'isMine'" when-visible="animateElementIn" when-not-visible="animateElementOut" >
                     <h3 class="">{{ proposal['title'] }}</h3>
                     <p class="description">{{ proposal['desc'] }}</p>
                     <p class="description">{{proposal['time'] * 1000 | date:'yyyy-MM-dd HH:mm:ss Z'}}</p>
