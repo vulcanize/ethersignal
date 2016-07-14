@@ -126,7 +126,10 @@
 
             &nbsp;&nbsp;&nbsp;&nbsp;
             <label class="control-label" for="minDeposit">Minimum Deposit (finney)</label>
-            <input ng-model="mindeposit" id="minDeposit" name="minDeposit" ng-change="minDepositChanged(mindeposit)" type="number" placeholder="0" class="input-small" required>
+            <input ng-model="mindeposit" id="minDeposit" name="minDeposit"
+                   ng-change="minDepositChanged(mindeposit)"
+                   ng-model-options="{ debounce: 1000 }"
+                   type="number" placeholder="0" class="input-small" required>
         </div>
     </div>
     <div class="row">
