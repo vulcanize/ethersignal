@@ -117,8 +117,10 @@
                 Filter<span class="caret"></span>
             </button>
             <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="single-button">
-                <li><label><input type="checkbox" ng-model="showMine">&nbsp;Show only positions I registered</label></li>
-                <li><label><input type="checkbox" ng-model="showIHaveSignaled">&nbsp;Show only positions I signaled</label></li>
+                <li><label><input type="checkbox" ng-model="showMine"
+ng-true-value=true ng-false-value=false>&nbsp;Show only positions I registered</label></li>
+                <li><label><input type="checkbox" ng-model="showIHaveSignaled"
+ng-true-value=true ng-false-value=false>&nbsp;Show only positions I signaled</label></li>
 
 
 
@@ -140,7 +142,9 @@
         </div>
         <div class="col-sm-12">
             <ul class="list-group">
-                <li class="list-group-item proposal not-visible" ng-repeat="proposal in proposals | orderBy: reverseTime | filter:{isMine:showMine} | filter:{iHaveSignaled:showIHaveSignaled}" when-visible="animateElementIn" when-not-visible="animateElementOut" >            
+                <li class="list-group-item proposal not-visible"
+ng-repeat="proposal in proposals | orderBy: reverseTime |
+filter:{isMine:(showMine?true:isMine)} | filter:{iHaveSignaled:(showIHaveSignaled?true:iHaveSignaled)}" when-visible="animateElementIn" when-not-visible="animateElementOut" >            
                     <h3 class="">{{ proposal['title'] }}</h3>
                     <p class="description">{{ proposal['desc'] }}</p>
                     <p class="description">{{proposal['time'] * 1000 | date:'yyyy-MM-dd HH:mm:ss Z'}}</p>
