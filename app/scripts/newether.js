@@ -288,7 +288,7 @@ app.service('proposalService', ['ethSignalContract', '$q','ethereum','$rootScope
 			antiMap[a] = antiMap[a] * bal;
 
 			for (idx in web3.eth.accounts) {
-				if (web3.eth.accounts[idx] == a) { isMine = true; }
+				if (web3.eth.accounts[idx] === a) { isMine = true; }
 			}
 		});
 
