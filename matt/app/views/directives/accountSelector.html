@@ -1,9 +1,0 @@
-<ul class="nav navbar-nav" style="float: right">
-	<li style="margin:10px 1em 0 0;">
-		<select ng-model="user.defaultAccount" class="btn btn-default dropdown-toggle">
-			<option value="coinbase">Select Account</option>
-			<option ng-repeat="account in accounts" value="{{account}}">{{ account }}</option>
-		</select>
-	</li>
-	<li><button type="button" class="btn btn-default navbar-btn" ng-click="newProposal()">Submit a position</button></li>
-</ul>
