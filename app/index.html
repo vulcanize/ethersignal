@@ -111,15 +111,17 @@
 <div class="panel panel-default">
     <div class="panel-heading">
         <network-stats ng-hide="isMist"></network-stats>
+
         <div class="btn-group" uib-dropdown is-open="status.isopen">
             <button id="single-button" type="button" class="btn btn-sm btn-default" uib-dropdown-toggle ng-disabled="disabled">
                 Filter<span class="caret"></span>
             </button>
             <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="single-button">
-                <li><a href="#" ng-click="" class="small" data-value="option1" tabIndex="-1"><input type="checkbox"/>&nbsp;Show only positions I registered</a></li>
-                <li><a href="#" ng-click="" class="small" data-value="option2" tabIndex="-1"><input type="checkbox"/>&nbsp;Show only positions I signaled</a></li>
+                <li><label><input type="checkbox" ng-model="filterRegistered" ng-true-value="'time'" ng-false-value="'-time'">&nbsp;Show only positions I registered</label></li>
+                <li><label><input type="checkbox" ng-model="filterSignals" ng-true-value="'time'" ng-false-value="'-time'">&nbsp;Show only positions I signaled</label></li>
+                
                 <li class="divider"></li>
-                <li><a href="#" ng-click="" class="small" data-value="option2" tabIndex="-1"><input type="checkbox"/>&nbsp;Reverse date</a></li>
+                <li><label><input type="checkbox" ng-model="reverseTime" ng-true-value="'time'" ng-false-value="'-time'">&nbsp;Reverse date</label></li>
             </ul>
 
             &nbsp;&nbsp;&nbsp;&nbsp;
@@ -133,9 +135,11 @@
         </div>
         <div class="col-sm-12">
             <ul class="list-group">
-                <li class="list-group-item proposal not-visible" ng-repeat="proposal in proposals track by $index" when-visible="animateElementIn" when-not-visible="animateElementOut" >
+                <li class="list-group-item proposal not-visible" ng-repeat="proposal in proposals | orderBy: reverseTime" when-visible="animateElementIn" when-not-visible="animateElementOut" >
                     <h3 class="">{{ proposal['title'] }}</h3>
                     <p class="description">{{ proposal['desc'] }}</p>
+                    <p class="description">{{proposal['time'] * 1000 | date:'yyyy-MM-dd HH:mm:ss Z'}}</p>
+
                     <br>
                     <div id="voteButtons">
                         <button type="button" id="testBtn" class="btn btn-success glyphicon glyphicon-thumbs-up" ng-click="vote(proposal['sigAddr'], true)"> <span>{{proposal['pro']}} Yay</span></button>

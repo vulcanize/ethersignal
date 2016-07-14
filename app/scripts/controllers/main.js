@@ -16,4 +16,5 @@ app.controller('MainCtrl', function ($scope, $rootScope) {
 	$scope.closeAlert = function(index) {
 		$scope.alerts.splice(index, 1);
 	};
+
 });
