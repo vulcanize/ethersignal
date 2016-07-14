@@ -167,6 +167,7 @@ app.service('ethereum', function($rootScope, $interval, $timeout) {
 	$rootScope.currentBlock = 'SYNCING';
 	$rootScope.currentBlockTime = 'SYNCING';
 	$rootScope.sinceLastBlock = 0;
+	$rootScope.minDeposit = 0;
 	$interval(function() {
 		var newState = web3.isConnected();
 		if (newState != connected){
@@ -216,26 +217,30 @@ app.service('proposalService', ['ethSignalContract', '$q','ethereum','$rootScope
 	$rootScope.$on('connectionStateChanged', function(evt, connected){
 		if(connected) getPositions();
 	})
+
+	$rootScope.minDepositChanged = function(minDeposit) {
+		$rootScope.minDeposit = minDeposit;
+		positions = [];
+		if(connected) getPositions();
+	}
+
 	function getPositions() {
 		positionregistry.LogPosition({}, {fromBlock:1200000}).get(function(err,evt) {
 			if (err) console.warn()
 
-			console.log("XXXADS minDeposit");
-			var minDeposit = 0; //$rootScope.minDeposit;
-			console.log("XXXADS minDeposit: " + minDeposit);
 			var obj;
 			var dep;
 			for (obj in evt) {
-				dep = web3.fromWei(web3.eth.getBalance(evt[obj].args.sigAddr));
-				if (dep >= minDeposit) {
-					// console.log(evt[obj]);
-					getSigList(evt[obj])
+				dep = Number(web3.fromWei(web3.eth.getBalance(evt[obj].args.sigAddr), "finney"));
+				if (dep >= $rootScope.minDeposit) {
+					//console.log(evt[obj]);
+					getSigList(evt[obj], dep)
 				}
 			}
 		});
 	}
 
-	function getSigList(input){
+	function getSigList(input, dep){
 		var address = input.args.sigAddr
 		// console.log("getSigList", address);
 		var etherSig = ethersignalContract.at(address)
@@ -255,7 +260,7 @@ app.service('proposalService', ['ethSignalContract', '$q','ethereum','$rootScope
 					antiMap[evt[obj].args.addr] = 1;
 				}
 			}
-			CalcSignal(proMap, antiMap, input)
+			CalcSignal(proMap, antiMap, input, dep)
 		})
 	}
 
@@ -266,7 +271,7 @@ app.service('proposalService', ['ethSignalContract', '$q','ethereum','$rootScope
 		return res
 	}
 
-	function CalcSignal(proMap, antiMap, input) {
+	function CalcSignal(proMap, antiMap, input, dep) {
 		var totalPro = 0;
 		var totalAgainst = 0;
 		// call getBalance just once per address
@@ -284,8 +289,8 @@ app.service('proposalService', ['ethSignalContract', '$q','ethereum','$rootScope
 		// console.log(totalAgainst);
 		var percent = calcPercent( totalPro, totalAgainst );
 
-		positions.push({title: input.args.title, desc: input.args.text, regAddr: input.args.regAddr, pro: Math.round(totalPro), against: Math.round(totalAgainst), percent: percent, sigAddr: input.args.sigAddr})
-		// console.log(positions);
+		positions.push({title: input.args.title, desc: input.args.text, regAddr: input.args.regAddr, pro: Math.round(totalPro), against: Math.round(totalAgainst), percent: percent, sigAddr: input.args.sigAddr, deposit: dep})
+		console.log(positions);
 	}
 
 	return {

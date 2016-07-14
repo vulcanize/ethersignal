@@ -125,8 +125,7 @@
 
             &nbsp;&nbsp;&nbsp;&nbsp;
             <label class="control-label" for="minDeposit">Minimum Deposit (finney)</label>
-            <input ng-model="minDeposit" id="minDeposit" name="minDeposit"
-type="number" placeholder="0" class="input-small" required>
+            <input ng-model="mindeposit" id="minDeposit" name="minDeposit" ng-change="minDepositChanged(mindeposit)" type="number" placeholder="0" class="input-small" required>
         </div>
     </div>
     <div class="row">
@@ -150,7 +149,7 @@ type="number" placeholder="0" class="input-small" required>
                         <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: {{ proposal['percent'][1] }}%">Nay {{ proposal['percent'][1] }}%
                         </div>
                     </div>
-                    <p class="description light">Submitted by {{proposal['regAddr']}}</p>
+                    <p class="description light">Submitted by {{proposal['regAddr']}}, Deposit (finney): {{proposal['deposit']}}</p>
                 </li>
             </ul>
         </div>
