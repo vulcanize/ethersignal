@@ -19,13 +19,13 @@ for a position, list the registered positions, or register a position:
 > ListPositions()
 [Positions: cut & paste the CalcSignal(); portion to see current signal levels]
 
-Position CalcSignal("0x953521cfe06b48d65b64ae864abb4c808312885e");
+Position CalcSignal("0x953521cfe06b48d65b64ae864abb4c808312885e", 1297010);
  registered by 0x8c2741b9bebd3c27feb7bb3356f7b04652977b78
  eth deposit: 0
 Title: will this work
 Text: will this contract factory work
 
-Position CalcSignal("0xcdda0a8fe9a7a844c9d8611b2cadfe36b4bb438f");
+Position CalcSignal("0xcdda0a8fe9a7a844c9d8611b2cadfe36b4bb438f", 1297014);
  registered by 0x8c2741b9bebd3c27feb7bb3356f7b04652977b78
  eth deposit: 0
 Title: title
@@ -43,7 +43,7 @@ true
 === As you can see above, in order to get the current signal levels for a position
 you can simply cut and paste the CalcSignal(); portion of the output from
 ListPositions():
-> CalcSignal("0x953521cfe06b48d65b64ae864abb4c808312885e");
+> CalcSignal("0x953521cfe06b48d65b64ae864abb4c808312885e", 1297010);
 {
   against: 0,
   pro: 167.12471268213704

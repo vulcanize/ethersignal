@@ -13,13 +13,12 @@ if (typeof web3 !== 'undefined' && typeof Web3 !== 'undefined') {
     }
 }
 
+var ethersignalContract = web3.eth.contract([{"constant":false,"inputs":[{"name":"amount","type":"uint256"}],"name":"withdraw","outputs":[],"type":"function"},{"constant":false,"inputs":[{"name":"pro","type":"bool"}],"name":"setSignal","outputs":[],"type":"function"},{"constant":false,"inputs":[],"name":"endSignal","outputs":[],"type":"function"},{"inputs":[{"name":"rAddr","type":"address"}],"type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"name":"pro","type":"bool"},{"indexed":false,"name":"addr","type":"address"}],"name":"LogSignal","type":"event"},{"anonymous":false,"inputs":[],"name":"EndSignal","type":"event"}]);
 
-var ethersignalContract = web3.eth.contract([{"constant":false,"inputs":[{"name":"pro","type":"bool"}],"name":"setSignal","outputs":[],"type":"function"},{"constant":false,"inputs":[],"name":"endSignal","outputs":[],"type":"function"},{"inputs":[{"name":"rAddr","type":"address"}],"type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"name":"pro","type":"bool"},{"indexed":false,"name":"addr","type":"address"}],"name":"LogSignal","type":"event"},{"anonymous":false,"inputs":[],"name":"EndSignal","type":"event"}]);
 var positionregistryContract = web3.eth.contract([{"constant":false,"inputs":[{"name":"title","type":"string"},{"name":"text","type":"string"}],"name":"registerPosition","outputs":[],"type":"function"},{"anonymous":false,"inputs":[{"indexed":true,"name":"regAddr","type":"address"},{"indexed":true,"name":"sigAddr","type":"address"},{"indexed":false,"name":"title","type":"string"},{"indexed":false,"name":"text","type":"string"}],"name":"LogPosition","type":"event"}]);
-var positionregistry = positionregistryContract.at('0x0265a5b822625ca506c474912662617c394bbb66')
+var to = '0x9e75993a7a9b9f92a1978bcc15c30cbcb967bc81';
+var positionregistry = positionregistryContract.at(to);
 
-
-var to = '0x0265a5b822625ca506c474912662617c394bbb66';
 
 var connected = false;
 
@@ -103,6 +102,7 @@ app.directive('proposalsList', ['proposalService','ethereum','$uibModal','$rootS
 					scope.invalidForm = true;
 					return
 				}
+
 				scope.invalidForm = false;
 				proposalService.newProposal(proposal);
 			};
@@ -167,6 +167,7 @@ app.service('ethereum', function($rootScope, $interval, $timeout) {
 	$rootScope.currentBlock = 'SYNCING';
 	$rootScope.currentBlockTime = 'SYNCING';
 	$rootScope.sinceLastBlock = 0;
+	$rootScope.minDeposit = 0;
 	$interval(function() {
 		var newState = web3.isConnected();
 		if (newState != connected){
@@ -205,17 +206,23 @@ app.service('proposalService', ['ethSignalContract', '$q','ethereum','$rootScope
 	$rootScope.animateElementIn = function($el) {
 	    $el.removeClass('not-visible');
 	    $el.addClass('animated fadeIn'); // this example leverages animate.css classes
-	};
-  	$rootScope.animateElementOut = function($el) {
-   		// $el.addClass('not-visible');
-    	// $el.removeClass('fadeIn');
 	}
-	var minDeposit = 0;
+	$rootScope.animateElementOut = function($el) {
+		// $el.addClass('not-visible');
+		// $el.removeClass('fadeIn');
+	}
 	var positions = [];
 	$rootScope.newProposals = [];
 	$rootScope.$on('connectionStateChanged', function(evt, connected){
 		if(connected) getPositions();
 	})
+
+	$rootScope.minDepositChanged = function(minDeposit) {
+		$rootScope.minDeposit = minDeposit;
+		positions = [];
+		if(connected) getPositions();
+	}
+
 	function getPositions() {
 		positionregistry.LogPosition({}, {fromBlock:1200000}).get(function(err,evt) {
 			if (err) console.warn()
@@ -223,20 +230,20 @@ app.service('proposalService', ['ethSignalContract', '$q','ethereum','$rootScope
 			var obj;
 			var dep;
 			for (obj in evt) {
-				dep = web3.fromWei(web3.eth.getBalance(evt[obj].args.sigAddr));
-				if (dep >= minDeposit) {
-					// console.log(evt[obj]);
-					getSigList(evt[obj])
+				dep = Number(web3.fromWei(web3.eth.getBalance(evt[obj].args.sigAddr), "finney"));
+				if (dep >= $rootScope.minDeposit) {
+					//console.log(evt[obj]);
+					getSigList(evt[obj], dep)
 				}
 			}
 		});
 	}
 
-	function getSigList(input){
+	function getSigList(input, dep){
 		var address = input.args.sigAddr
 		// console.log("getSigList", address);
 		var etherSig = ethersignalContract.at(address)
-		etherSig.LogSignal({}, {fromBlock:1200000}).get(function(err,evt) {
+		etherSig.LogSignal({}, {fromBlock:input.blockNumber}).get(function(err,evt) {
 			if (err) console.warn("warning")
 
 			var proMap = {};
@@ -252,7 +259,7 @@ app.service('proposalService', ['ethSignalContract', '$q','ethereum','$rootScope
 					antiMap[evt[obj].args.addr] = 1;
 				}
 			}
-			CalcSignal(proMap, antiMap, input)
+			CalcSignal(proMap, antiMap, input, dep)
 		})
 	}
 
@@ -263,7 +270,7 @@ app.service('proposalService', ['ethSignalContract', '$q','ethereum','$rootScope
 		return res
 	}
 
-	function CalcSignal(proMap, antiMap, input) {
+	function CalcSignal(proMap, antiMap, input, dep) {
 		var totalPro = 0;
 		var totalAgainst = 0;
 		// call getBalance just once per address
@@ -281,8 +288,8 @@ app.service('proposalService', ['ethSignalContract', '$q','ethereum','$rootScope
 		// console.log(totalAgainst);
 		var percent = calcPercent( totalPro, totalAgainst );
 
-		positions.push({title: input.args.title, desc: input.args.text, regAddr: input.args.regAddr, pro: Math.round(totalPro), against: Math.round(totalAgainst), percent: percent, sigAddr: input.args.sigAddr})
-		// console.log(positions);
+		positions.push({title: input.args.title, desc: input.args.text, regAddr: input.args.regAddr, pro: Math.round(totalPro), against: Math.round(totalAgainst), percent: percent, sigAddr: input.args.sigAddr, deposit: dep})
+		console.log(positions);
 	}
 
 	return {
@@ -293,17 +300,20 @@ app.service('proposalService', ['ethSignalContract', '$q','ethereum','$rootScope
 		},
 		vote: function(posSigAddr, proBool) {
 			//console.log(posSigAddr, proBool);
-			var from = ethereum.web3.eth.defaultAccount;
 			var etherSig = ethersignalContract.at(posSigAddr)
-			try {
-				$rootScope.lastTx = etherSig.setSignal(proBool, {from: from});
+			for (idx in web3.eth.accounts)
+			{
+				var from = web3.eth.accounts[idx];
+				try {
+					$rootScope.lastTx = etherSig.setSignal(proBool, {from: from});
+				}
+				catch(e) {
+					console.log("Error submitting signal");
+					console.log(e);
+					$rootScope.alerts.push({ type: 'danger', msg: 'Error sending signal' });
+				}
+				$rootScope.alerts.push({ type: 'success', msg: 'Signal sent!' });
 			}
-			catch(e) {
-				console.log("Error submitting signal");
-				console.log(e);
-				$rootScope.alerts.push({ type: 'danger', msg: 'Error sending signal' });
-			}
-			$rootScope.alerts.push({ type: 'success', msg: 'Signal sent!' });
 		},
 		newProposal: function(proposal) {
 

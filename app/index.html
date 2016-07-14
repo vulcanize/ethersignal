@@ -111,7 +111,6 @@
 <div class="panel panel-default">
     <div class="panel-heading">
         <network-stats ng-hide="isMist"></network-stats>
-        <!--
         <div class="btn-group" uib-dropdown is-open="status.isopen">
             <button id="single-button" type="button" class="btn btn-sm btn-default" uib-dropdown-toggle ng-disabled="disabled">
                 Filter<span class="caret"></span>
@@ -122,9 +121,11 @@
                 <li class="divider"></li>
                 <li><a href="#" ng-click="" class="small" data-value="option2" tabIndex="-1"><input type="checkbox"/>&nbsp;Reverse date</a></li>
             </ul>
-        </div>
-        -->
 
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <label class="control-label" for="minDeposit">Minimum Deposit (finney)</label>
+            <input ng-model="mindeposit" id="minDeposit" name="minDeposit" ng-change="minDepositChanged(mindeposit)" type="number" placeholder="0" class="input-small" required>
+        </div>
     </div>
     <div class="row">
         <div class="col-sm-12" ng-hide="proposals.length != 0">
@@ -147,7 +148,7 @@
                         <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: {{ proposal['percent'][1] }}%">Nay {{ proposal['percent'][1] }}%
                         </div>
                     </div>
-                    <p class="description light">Submitted by {{proposal['regAddr']}}</p>
+                    <p class="description light">Submitted by {{proposal['regAddr']}}, Deposit (finney): {{proposal['deposit']}}</p>
                 </li>
             </ul>
         </div>
