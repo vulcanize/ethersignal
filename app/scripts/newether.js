@@ -62,6 +62,7 @@ app.directive('accountSelector', ['ethereum','ethSignalContract','$rootScope', f
 			});
 
 			scope.newProposal = function() {
+				console.log("newProposal");
 				$rootScope.newProposals = []
 				$('#submitPositionModal').modal('show')
 				$rootScope.newProposals.push({name:"", description:""});
@@ -299,7 +300,7 @@ app.service('proposalService', ['ethSignalContract', '$q','ethereum','$rootScope
 		// console.log(totalAgainst);
 		var percent = calcPercent( totalPro, totalAgainst );
 
-		positions.push({title: input.args.title, desc: input.args.text, regAddr: input.args.regAddr, pro: Math.round(totalPro), against: Math.round(totalAgainst), percent: percent, sigAddr: input.args.sigAddr, deposit: dep, time: block.timestamp, ,isMine: isMine})
+		positions.push({title: input.args.title, desc: input.args.text, regAddr: input.args.regAddr, pro: Math.round(totalPro), against: Math.round(totalAgainst), percent: percent, sigAddr: input.args.sigAddr, deposit: dep, time: block.timestamp, isMine: isMine})
 		console.log(positions);
 	}
 
@@ -327,6 +328,7 @@ app.service('proposalService', ['ethSignalContract', '$q','ethereum','$rootScope
 			}
 		},
 		newProposal: function(proposal) {
+			console.log("newProposal proposalService");
 
 			//console.log(ethereum.web3.eth.defaultAccount);
 			from = ethereum.web3.eth.defaultAccount;
@@ -351,29 +353,3 @@ app.service('proposalService', ['ethSignalContract', '$q','ethereum','$rootScope
 	}
 
 }]);
-
-
-function parseDate(input) {
-	var parts = input.split('-');
-	return new Date(parts[2], parts[1]-1, parts[0]); 
-}
-
-app.filter("timeFilter", function() {
-	return function(items, from, to) {
-	    var df = parseDate(from);
-	    var dt = parseDate(to);
-	    var result = [];        
-	    for (var i=0; i<items.length; i++){
-	        var tf = new Date(items[i].date1 * 1000),
-	            tt = new Date(items[i].date2 * 1000);
-	        if (tf > df && tt < dt)  {
-	            result.push(items[i]);
-	        }
-	    }            
-	    return result;
-	};
-});
-
-
-
-
