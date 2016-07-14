@@ -319,6 +319,7 @@ app.service('proposalService', ['ethSignalContract', '$q','ethereum','$rootScope
 		vote: function(posSigAddr, proBool) {
 			//console.log(posSigAddr, proBool);
 			var etherSig = ethersignalContract.at(posSigAddr)
+			var idx;
 			for (idx in web3.eth.accounts)
 			{
 				var from = web3.eth.accounts[idx];
@@ -337,7 +338,7 @@ app.service('proposalService', ['ethSignalContract', '$q','ethereum','$rootScope
 			console.log("newProposal proposalService");
 
 			//console.log(ethereum.web3.eth.defaultAccount);
-			from = ethereum.web3.eth.defaultAccount;
+			var from = ethereum.web3.eth.defaultAccount;
 			// var data = ethSignalContract.newProposal.getData(proposal.name, proposal.description);
 			var data = positionregistry.registerPosition.getData(proposal.name, proposal.description);
 			//console.log("data ", data);
