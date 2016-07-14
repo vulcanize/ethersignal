@@ -287,7 +287,7 @@ app.service('proposalService', ['ethSignalContract', '$q','ethereum','$rootScope
 			antiMap[a] = antiMap[a] * bal;
 
 			for (idx in web3.eth.accounts) {
-				if (web3.eth.accounts[idx] == a) { isMine = true; }
+				if (web3.eth.accounts[idx] === a) { isMine = true; }
 			}
 		});
 
@@ -299,7 +299,7 @@ app.service('proposalService', ['ethSignalContract', '$q','ethereum','$rootScope
 		// console.log(totalAgainst);
 		var percent = calcPercent( totalPro, totalAgainst );
 
-		positions.push({title: input.args.title, desc: input.args.text, regAddr: input.args.regAddr, pro: Math.round(totalPro), against: Math.round(totalAgainst), percent: percent, sigAddr: input.args.sigAddr, deposit: dep, time: block.timestamp, ,isMine: isMine})
+		positions.push({title: input.args.title, desc: input.args.text, regAddr: input.args.regAddr, pro: Math.round(totalPro), against: Math.round(totalAgainst), percent: percent, sigAddr: input.args.sigAddr, deposit: dep, time: block.timestamp, isMine: isMine})
 		console.log(positions);
 	}
 
