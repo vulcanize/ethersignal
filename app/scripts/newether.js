@@ -219,7 +219,7 @@ app.service('proposalService', ['ethSignalContract', '$q','ethereum','$rootScope
 
 	$rootScope.minDepositChanged = function(minDeposit) {
 		$rootScope.minDeposit = minDeposit;
-		positions = [];
+		while (positions.pop())
 		if(connected) getPositions();
 	}
 
@@ -234,6 +234,7 @@ app.service('proposalService', ['ethSignalContract', '$q','ethereum','$rootScope
 				if (dep >= $rootScope.minDeposit) {
 					//console.log(evt[obj]);
 					getSigList(evt[obj], dep)
+					cnt++;
 				}
 			}
 		});
