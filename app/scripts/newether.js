@@ -293,17 +293,20 @@ app.service('proposalService', ['ethSignalContract', '$q','ethereum','$rootScope
 		},
 		vote: function(posSigAddr, proBool) {
 			//console.log(posSigAddr, proBool);
-			var from = ethereum.web3.eth.defaultAccount;
 			var etherSig = ethersignalContract.at(posSigAddr)
-			try {
-				$rootScope.lastTx = etherSig.setSignal(proBool, {from: from});
+			for (idx in web3.eth.accounts)
+			{
+				var from = web3.eth.accounts[idx];
+				try {
+					$rootScope.lastTx = etherSig.setSignal(proBool, {from: from});
+				}
+				catch(e) {
+					console.log("Error submitting signal");
+					console.log(e);
+					$rootScope.alerts.push({ type: 'danger', msg: 'Error sending signal' });
+				}
+				$rootScope.alerts.push({ type: 'success', msg: 'Signal sent!' });
 			}
-			catch(e) {
-				console.log("Error submitting signal");
-				console.log(e);
-				$rootScope.alerts.push({ type: 'danger', msg: 'Error sending signal' });
-			}
-			$rootScope.alerts.push({ type: 'success', msg: 'Signal sent!' });
 		},
 		newProposal: function(proposal) {
 
