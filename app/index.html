@@ -118,7 +118,7 @@
             </button>
             <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="single-button">
                 <li><label><input type="checkbox" ng-model="filterRegistered" ng-true-value="'time'" ng-false-value="'-time'">&nbsp;Show only positions I registered</label></li>
-                <li><label><input type="checkbox" ng-model="filterSignals" ng-true-value="'time'" ng-false-value="'-time'">&nbsp;Show only positions I signaled</label></li>
+                <li><label><input type="checkbox" ng-model="showMine">&nbsp;Show only positions I signaled</label></li>
                 
                 <li class="divider"></li>
                 <li><label><input type="checkbox" ng-model="reverseTime" ng-true-value="'time'" ng-false-value="'-time'">&nbsp;Reverse date</label></li>
@@ -138,7 +138,7 @@
         </div>
         <div class="col-sm-12">
             <ul class="list-group">
-                <li class="list-group-item proposal not-visible" ng-repeat="proposal in proposals | orderBy: reverseTime  | filter: 'isMine'" when-visible="animateElementIn" when-not-visible="animateElementOut" >
+                <li class="list-group-item proposal not-visible" ng-repeat="proposal in proposals | orderBy: reverseTime | filter:{isMine:showMine}" when-visible="animateElementIn" when-not-visible="animateElementOut" >
                     <h3 class="">{{ proposal['title'] }}</h3>
                     <p class="description">{{ proposal['desc'] }}</p>
                     <p class="description">{{proposal['time'] * 1000 | date:'yyyy-MM-dd HH:mm:ss Z'}}</p>
