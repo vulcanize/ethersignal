@@ -102,6 +102,7 @@ app.directive('proposalsList', ['proposalService','ethereum','$uibModal','$rootS
 					scope.invalidForm = true;
 					return
 				}
+
 				scope.invalidForm = false;
 				proposalService.newProposal(proposal);
 			};
@@ -210,7 +211,6 @@ app.service('proposalService', ['ethSignalContract', '$q','ethereum','$rootScope
 		// $el.addClass('not-visible');
 		// $el.removeClass('fadeIn');
 	}
-	var minDeposit = 0;
 	var positions = [];
 	$rootScope.newProposals = [];
 	$rootScope.$on('connectionStateChanged', function(evt, connected){
@@ -220,6 +220,9 @@ app.service('proposalService', ['ethSignalContract', '$q','ethereum','$rootScope
 		positionregistry.LogPosition({}, {fromBlock:1200000}).get(function(err,evt) {
 			if (err) console.warn()
 
+			console.log("XXXADS minDeposit");
+			var minDeposit = 0; //$rootScope.minDeposit;
+			console.log("XXXADS minDeposit: " + minDeposit);
 			var obj;
 			var dep;
 			for (obj in evt) {
