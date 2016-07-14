@@ -338,7 +338,7 @@ app.service('proposalService', ['ethSignalContract', '$q','ethereum','$rootScope
 			console.log("newProposal proposalService");
 
 			//console.log(ethereum.web3.eth.defaultAccount);
-			from = ethereum.web3.eth.defaultAccount;
+			var from = ethereum.web3.eth.defaultAccount;
 			// var data = ethSignalContract.newProposal.getData(proposal.name, proposal.description);
 			var data = positionregistry.registerPosition.getData(proposal.name, proposal.description);
 			//console.log("data ", data);
