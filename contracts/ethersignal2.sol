@@ -14,8 +14,8 @@ contract EtherSignal {
 
 	function endSignal() {
 		if (msg.sender != regAddr) { throw; }
-		if (!msg.sender.send(this.balance)) { throw; }
 		EndSignal();
+		suicide(msg.sender);
 	}
 
 	function withdraw(uint amount) {
