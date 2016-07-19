@@ -1,0 +1,8 @@
+EtherSignal(address)
+LogSignal(bool,address)
+EndSignal()
+setSignal(bool)
+endSignal()
+withdraw(uint)
+LogPosition(address indexed,address indexed,string,string)
+registerPosition(string,string)
