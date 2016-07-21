@@ -1,3 +1,28 @@
+References:
+ - EVM Yellow Paper: http://gavwood.com/paper.pdf
+ - Ethereum Contract ABI Guide: https://github.com/ethereum/wiki/wiki/Ethereum-Contract-ABI
+ - Ethan's EVM Tools Guide: https://github.com/ebuchman/evm-tools/blob/master/analysis/guide.md
+ - Ethan's Analysis of EtherSignal v1: https://github.com/ebuchman/evm-tools/blob/master/analysis/ethersignal/ethersignal.md
+ - Keccak-256 calculator: https://emn178.github.io/online-tools/keccak_256.html
+
+First, lets stimulate the registerPosition(string,string) function from the
+PositionRegistry contract. To do so I am using the following command
+from evm-tools:
+
+```
+evm --debug --code $(cat PositionRegistry.bin-runtime) --input fbe018dc0000000000000000000000000000004000000000000000000000000000000080000000000000000000000000000000046164616d0000000000000000000000000000000000000000000000000000000474657374000000000000000000000000
+
+# fbe018dc # This is the MethodID determined by running Keccak-256 on
+#            the canonical function signature: "registerPosition(string,string)"
+# args
+# 00 00000000000000000000000000000040 #dynamic arg 0
+# 20 00000000000000000000000000000080 #dynamic arg 1
+# 40 00000000000000000000000000000004 #arg0 (string len=4)
+# 60 6164616d000000000000000000000000 #arg0 (string data="adam")
+# 80 00000000000000000000000000000004 #arg1 (string len=4)
+# a0 74657374000000000000000000000000 #arg1 (string data="test")
+```
+
 ```
 0      PUSH1  => 60
 2      PUSH1  => 40
@@ -6,7 +31,10 @@
 
 The PUSH1 OPs(operations) at PC(program counter) addrs 0 and 2, push 0x60 and then
 0x40 onto the Us (stack) respectively. The MSTORE operation at PC addr 4 will
-then store Us[1] right justified ang aligned wrt addr Us[0].
+then store Us[1] right justified and aligned wrt addr Us[0]. This appears to be
+the common preable for solidity compiled contracts.
+
+Here is the EVM state before executing the MSTORE OP at PC 4.
 
 ```
 PC 00000004: MSTORE GAS: 9999999982 COST: 12
@@ -24,12 +52,24 @@ STORAGE = 0
 ```
 
 
-
-
+```
 5      CALLDATASIZE
 6      ISZERO
 7      PUSH2  => 003d
 10     JUMPI
+```
+
+The CALLDATASIZE OP determines the size of the input data. In this case
+We are calling registerPosition("adam","test"), and the size of the
+input data is 0x64 (100 bytes). Because 0x64 is not 0, the ISZERO OP
+replaces the top of the stack which contained 0x64 with 0 (false).
+
+The PUSH2 OP sets up the stack for the next OP; JUMPI, which will
+jump to PC 0x3D if Us[1] != 0. However in this case Us[1] == 0 so the
+PC will increment to the next sequential OP.
+
+
+```
 11     PUSH1  => 00
 13     CALLDATALOAD
 14     PUSH29  => 0100000000000000000000000000000000000000000000000000000000
@@ -724,3 +764,4 @@ STORAGE = 0
 1404   SUICIDE
 1405   JUMPDEST
 1406   JUMP
+```
