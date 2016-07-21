@@ -51,6 +51,20 @@ MEM = 96
 STORAGE = 0
 ```
 
+and after the MSTORE OP (note the 0x60 at Um[0x8f]):
+
+```
+PC 00000005: CALLDATASIZE GAS: 9999999980 COST: 2
+STACK = 0
+MEM = 96
+0000: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+0016: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+0032: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+0048: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+0064: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+0080: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 60  ...............`
+STORAGE = 0
+```
 
 ```
 5      CALLDATASIZE
@@ -60,7 +74,7 @@ STORAGE = 0
 ```
 
 The CALLDATASIZE OP determines the size of the input data. In this case
-We are calling registerPosition("adam","test"), and the size of the
+we are calling registerPosition("adam","test"), and the size of the
 input data is 0x64 (100 bytes). Because 0x64 is not 0, the ISZERO OP
 replaces the top of the stack which contained 0x64 with 0 (false).
 
@@ -80,6 +94,48 @@ PC will increment to the next sequential OP.
 52     EQ
 53     PUSH2  => 004a
 56     JUMPI
+```
+
+Starting at PC 11. The PUSH1 OP first pushes 0x00 onto the stack. The CALLDATALOAD
+OP then pushes a copy of the first 32 Bytes of input data to the top of the
+stack (Us[0]). Next PUSH29 pushes 0x00000001000000000000000000000000 onto the stack,
+and SWAP1 then swaps Us[0] and Us[1]. Leaving the EVM in the following state.
+
+```
+PC 00000045: DIV GAS: 9999999947 COST: 5
+STACK = 2
+0000: fbe018dc00000000000000000000000000000040000000000000000000000000
+0001: 0000000100000000000000000000000000000000000000000000000000000000
+MEM = 96
+0000: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+0016: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+0032: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+0048: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+0064: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+0080: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 60  ...............`
+STORAGE = 0
+```
+
+After the DIV operation, we are left with the MethodID for the registerPosition()
+function in Us[0].
+
+```
+PC 00000046: DUP1 GAS: 9999999944 COST: 3
+STACK = 1
+0000: 00000000000000000000000000000000000000000000000000000000fbe018dc
+MEM = 96
+0000: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+0016: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+0032: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+0048: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+0064: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+0080: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 60  ...............`
+STORAGE = 0
+
+```
+
+
+```
 57     PUSH2  => 003d
 60     JUMP
 61     JUMPDEST
