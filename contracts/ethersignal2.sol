@@ -10,7 +10,7 @@ contract EtherSignal {
 
 	function setSignal(bool pro) {
 		LogSignal(pro, msg.sender);
-    }
+   	}
 
 	function endSignal() {
 		if (msg.sender != regAddr) { throw; }
