@@ -10,12 +10,12 @@ contract EtherSignal {
 
 	function setSignal(bool pro) {
 		LogSignal(pro, msg.sender);
-    }
+   	}
 
 	function endSignal() {
 		if (msg.sender != regAddr) { throw; }
-		if (!msg.sender.send(this.balance)) { throw; }
 		EndSignal();
+		suicide(msg.sender);
 	}
 
 	function withdraw(uint amount) {
