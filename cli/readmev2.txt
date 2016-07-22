@@ -64,9 +64,6 @@ balance adaptively:
 === You may withdraw ether from your registered position as follows (the unit here is ether not wei)
 > WithdrawFromPosition("0xcdda0a8fe9a7a844c9d8611b2cadfe36b4bb438f", 0.1);
 
-=== You may withdraw your position and reclaim the balance as follows
-> WithdrawPosition("0xcdda0a8fe9a7a844c9d8611b2cadfe36b4bb438f");
-
 === In order to vote on a position, you will need to use the positions
 signal address. Take the following signal as an example:
 Position CalcSignal("0xcdda0a8fe9a7a844c9d8611b2cadfe36b4bb438f");
