@@ -14,7 +14,7 @@ class PositionSubmitter extends Component {
     return (
       <Jumbotron className="position-submitter">
         <header>
-          <h1 className="position-submitter-heading">
+          <h1 className="position-submitter-heading animated pulse">
             <img className="position-submitter-logo" src={logo} alt="EtherSignal logo" />
             EtherSignal
           </h1>
