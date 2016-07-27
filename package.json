@@ -37,7 +37,8 @@
   },
   "dependencies": {
     "react": "^15.2.1",
-    "react-dom": "^15.2.1"
+    "react-dom": "^15.2.1",
+    "react-router": "^2.6.0"
   },
   "scripts": {
     "start": "node ./scripts/start.js",
