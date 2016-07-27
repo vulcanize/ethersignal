@@ -36,8 +36,10 @@
     "webpack-dev-server": "1.14.1"
   },
   "dependencies": {
+    "bootstrap": "^3.3.7",
     "isomorphic-fetch": "^2.2.1",
     "react": "^15.2.1",
+    "react-bootstrap": "^0.30.0",
     "react-dom": "^15.2.1",
     "react-redux": "^4.4.5",
     "react-router": "^2.6.0",

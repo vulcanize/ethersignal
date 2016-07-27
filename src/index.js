@@ -19,6 +19,7 @@ import Home from './components/environments/Home'
 import Frame from './components/environments/Frame'
 
 import './index.css'
+import 'bootstrap/dist/css/bootstrap.min.css'
 
 render(
   <Provider store={store}>
