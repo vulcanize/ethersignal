@@ -2,10 +2,14 @@ import React, { Component } from 'react'
 
 import './../../styles/environments/Home.css'
 
+import PositionSubmitter from './../ecosystems/PositionSubmitter'
+
 class Home extends Component {
   render() {
     return (
-      <pre>Home</pre>
+      <article>
+        <PositionSubmitter />
+      </article>
     )
   }
 }
