@@ -2,6 +2,10 @@
 
 }
 
+.app-header-logo {
+  max-width: 17px;
+}
+
 .navbar .navbar-brand > img {
   display: inline;
   margin-right: .125em;
