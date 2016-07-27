@@ -36,7 +36,8 @@ class Frame extends Component {
               <a onClick={this.handleSelect.bind(this, 0)}>EtherSignal</a>
             </Navbar.Brand>
           </Navbar.Header>
-          <Nav activeKey={this.getActiveRouteIndex.call(this)} onSelect={this.handleSelect.bind(this)}>
+          <Nav activeKey={this.getActiveRouteIndex.call(this)}
+               onSelect={this.handleSelect.bind(this)}>
             {
               routes.map((route, index) => {
                 return (
@@ -50,7 +51,9 @@ class Frame extends Component {
           </Nav>
         </Navbar>
 
-        {this.props.children}
+        <div className="container">
+          {this.props.children}
+        </div>
 
       </div>
     )
