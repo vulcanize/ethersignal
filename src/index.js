@@ -28,6 +28,7 @@ export const routes = [
 
 import './index.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
+import 'animate.css'
 
 render(
   <Provider store={store}>

@@ -36,6 +36,7 @@
     "webpack-dev-server": "1.14.1"
   },
   "dependencies": {
+    "animate.css": "^3.5.1",
     "bootstrap": "^3.3.7",
     "isomorphic-fetch": "^2.2.1",
     "react": "^15.2.1",
