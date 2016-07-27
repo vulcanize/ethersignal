@@ -15,8 +15,16 @@ const store = createStore(
   applyMiddleware(thunk, logger)
 )
 
-import Home from './components/environments/Home'
 import Frame from './components/environments/Frame'
+import Home from './components/environments/Home'
+import About from './components/environments/About'
+import CliQuickstart from './components/environments/CliQuickstart'
+
+export const routes = [
+  { path: '/', name: 'Home', component: Home },
+  { path: '/about', name: 'About', component: About },
+  { path: '/cliquickstart', name: 'Cli QuickStart', component: CliQuickstart }
+]
 
 import './index.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
@@ -26,6 +34,13 @@ render(
     <Router history={browserHistory}>
       <Route path="/" component={Frame}>
         <IndexRoute component={Home} />
+        {
+          routes.slice(1).map((route, index) => {
+            return (
+              <Route key={index} path={route.path} component={route.component} />
+            )
+          })
+        }
       </Route>
     </Router>
   </Provider>,
