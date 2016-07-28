@@ -1,11 +1,7 @@
-const initialState = {}
+import { combineReducers } from 'redux'
 
-export default function (state = initialState, action) {
+import position from './position-reducer'
 
-  switch (action.type) {
-
-  default:
-    return state
-  }
-
-}
+export default combineReducers({
+  position
+})

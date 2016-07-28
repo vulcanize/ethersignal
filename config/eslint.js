@@ -19,6 +19,10 @@ module.exports = {
     sourceType: 'module',
   },
 
+  rules: {
+    'new-cap': [ 'error', { 'capIsNew': false }]
+  },
+
   settings: {
     'import/ignore': [
       'node_modules',

@@ -15,6 +15,12 @@ const store = createStore(
   applyMiddleware(thunk, logger)
 )
 
+import {
+  fetchPositions
+} from './redux/actions/position-actions'
+
+store.dispatch(fetchPositions())
+
 import Frame from './components/environments/Frame'
 import Home from './components/environments/Home'
 import About from './components/environments/About'

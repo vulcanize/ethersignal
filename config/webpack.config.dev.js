@@ -34,6 +34,9 @@ module.exports = {
     filename: 'bundle.js',
     publicPath: '/'
   },
+  devServer: {
+    headers: { "Access-Control-Allow-Origin": "*" }
+  },
   resolve: {
     extensions: ['', '.js'],
   },
