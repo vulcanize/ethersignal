@@ -7,7 +7,7 @@ import {
 const initialState = {
   fetching: false,
   error: '',
-  positions: []
+  items: []
 }
 
 export default function positionReducer(state = initialState, action) {
@@ -24,7 +24,7 @@ export default function positionReducer(state = initialState, action) {
     return Object.assign({}, state, {
       fetching: false,
       error: '',
-      positions: [
+      items: [
         ...action.response
       ]
     })

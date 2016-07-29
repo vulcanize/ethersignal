@@ -1,17 +1,38 @@
-import React, { Component } from 'react'
+import React, { PropTypes, Component } from 'react'
+
+import { connect } from 'react-redux'
+
+import PositionSubmitter from './../ecosystems/PositionSubmitter'
+import Positions from './../ecosystems/Positions'
 
 import './../../styles/environments/Home.css'
 
-import PositionSubmitter from './../ecosystems/PositionSubmitter'
-
 class Home extends Component {
+
   render() {
     return (
       <article>
-        <PositionSubmitter />
+        <PositionSubmitter
+          dispatch={this.props.dispatch}
+          connection={this.props.connection} />
+        <Positions
+          dispatch={this.props.dispatch}
+          connection={this.props.connection}
+          positions={this.props.positions} />
       </article>
     )
   }
 }
 
-export default Home
+Home.propTypes = {
+  dispatch: PropTypes.func,
+  positions: PropTypes.object,
+  connection: PropTypes.object
+}
+
+export default connect(
+  state => ({
+    positions: state.positions,
+    connection: state.connection
+  })
+)(Home)
