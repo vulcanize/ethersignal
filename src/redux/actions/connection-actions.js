@@ -12,7 +12,7 @@ if (typeof web3 !== 'undefined' && typeof Web3 !== 'undefined') {
 
 export const FETCH_NETWORK_STATUS_REQUEST = 'FETCH_NETWORK_STATUS_REQUEST'
 export const FETCH_NETWORK_STATUS_SUCCESS = 'FETCH_NETWORK_STATUS_SUCCESS'
-export const FETCH_NETWORK_STATUS_FAILURE = ''
+export const FETCH_NETWORK_STATUS_FAILURE = 'FETCH_NETWORK_STATUS_FAILURE'
 
 export function fetchNetworkStatusRequest() {
   return {

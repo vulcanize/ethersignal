@@ -17,6 +17,10 @@ if (typeof web3 !== 'undefined' && typeof Web3 !== 'undefined') {
 	}
 }
 
+import {
+  addTimedAlert
+} from './alert-actions'
+
 /*
  * What contracts are we interested in?
  */
@@ -225,9 +229,11 @@ export function voteOnPosition(positionSignalAddress, vote) {
       })
     )
     .then(response => {
+      dispatch(addTimedAlert('Your vote was submitted!', 'success'))
       dispatch(voteOnPositionSuccess(response))
     })
     .catch(error => {
+      dispatch(addTimedAlert(error.message, 'danger'))
       dispatch(voteOnPositionFailure(error))
     })
   }

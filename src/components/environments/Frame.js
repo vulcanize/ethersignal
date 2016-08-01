@@ -8,6 +8,8 @@ import {
   NavItem
 } from 'react-bootstrap'
 
+import Alerts from './../ecosystems/Alerts'
+
 import logo from './../../images/logo.svg'
 import { routes } from './../../index'
 
@@ -54,6 +56,8 @@ class Frame extends Component {
         <div className="container">
           {this.props.children}
         </div>
+
+        <Alerts />
 
       </div>
     )
