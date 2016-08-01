@@ -39,6 +39,7 @@
     "animate.css": "^3.5.1",
     "bootstrap": "^3.3.7",
     "isomorphic-fetch": "^2.2.1",
+    "moment": "^2.14.1",
     "react": "^15.2.1",
     "react-bootstrap": "^0.30.0",
     "react-dom": "^15.2.1",
