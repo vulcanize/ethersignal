@@ -23,6 +23,7 @@ else {
   if (!connected) {
     web3 = new Web3(new Web3.providers.HttpProvider('https://signal.ether.ai/proxy'))
   }
+
 }
 
 /*

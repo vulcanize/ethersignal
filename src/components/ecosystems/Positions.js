@@ -28,6 +28,7 @@ class Positions extends Component {
 }
 
 Positions.propTypes = {
+  dispatch: PropTypes.func,
   connection: PropTypes.object,
   positions: PropTypes.object
 }

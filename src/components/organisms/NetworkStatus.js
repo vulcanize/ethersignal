@@ -89,6 +89,7 @@ class NetworkStatus extends Component {
 }
 
 NetworkStatus.propTypes = {
+  dispatch: PropTypes.func,
   connection: PropTypes.object
 }
 
