@@ -9,11 +9,15 @@ import {
   ProgressBar
 } from 'react-bootstrap'
 
+import {
+  voteOnPosition
+} from './../../redux/actions/position-actions'
+
 class PositionListItem extends Component {
 
-  vote(proposalId, position) {
+  vote(proposalId, vote) {
     // If a selected account is not available, alert the user.
-
+    this.props.dispatch(voteOnPosition(proposalId, vote))
   }
 
   render() {
@@ -34,12 +38,16 @@ class PositionListItem extends Component {
         <p>{formatTime(this.props.position.time)}</p>
 
         <div className="voting-butons" style={{marginBottom: '1em'}}>
-          <Button bsStyle="success">
+          <Button
+            onClick={this.vote.bind(this, this.props.position.sigAddr, true)}
+            bsStyle="success">
             <Glyphicon glyph="thumbs-up" />{' '}
             {this.props.position.pro}{' '}
             Yay</Button>
           {' '}
-          <Button bsStyle="danger">
+          <Button
+            onClick={this.vote.bind(this, this.props.position.sigAddr, false)}
+            bsStyle="danger">
             <Glyphicon glyph="thumbs-down" />{' '}
             {this.props.position.against}{' '}
             Nay
@@ -73,6 +81,7 @@ class PositionListItem extends Component {
 }
 
 PositionListItem.propTypes = {
+  dispatch: PropTypes.func,
   position: PropTypes.object
 }
 

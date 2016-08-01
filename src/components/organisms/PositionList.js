@@ -16,6 +16,7 @@ class PositionList extends Component {
           this.props.positions.items.map((position, index) => {
             return (
               <PositionListItem
+                dispatch={this.props.dispatch}
                 position={position}
                 key={index} />
             )
@@ -28,6 +29,7 @@ class PositionList extends Component {
 }
 
 PositionList.propTypes = {
+  dispatch: PropTypes.func,
   positions: PropTypes.object
 }
 

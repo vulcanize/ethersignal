@@ -1,6 +1,5 @@
 /*
- *
-  connection to local blockchain node.
+ * connection to local blockchain node.
  */
 
 /* global Web3 */
@@ -8,22 +7,14 @@
 import etherSignalAbi from './abi/etherSignalAbi'
 import positionRegistryAbi from './abi/positionRegistryAbi'
 
-let web3, connected
-
-if (typeof web3 !== 'undefined') {
-  web3 = new Web3(web3.currentProvider)
-}
-else {
-  // set the provider you want from Web3.providers
-  const Web3 = require('web3')
-  web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'))
-
-  connected = web3.isConnected()
-
-  if (!connected) {
-    web3 = new Web3(new Web3.providers.HttpProvider('https://signal.ether.ai/proxy'))
-  }
-
+if (typeof web3 !== 'undefined' && typeof Web3 !== 'undefined') {
+	web3 = new Web3(web3.currentProvider);
+} else if (typeof Web3 !== 'undefined') {
+	web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'));
+	if(!web3.isConnected()) {
+		const Web3 = require('web3');
+		web3 = new Web3(new Web3.providers.HttpProvider('https://signal.ether.ai/proxy'));
+	}
 }
 
 /*
@@ -99,7 +90,7 @@ export function fetchPositions() {
     }
 
     for (const index in web3.eth.accounts) {
-      if (web3.eth.accounts(index) === position.args.regAddr) {
+      if (web3.eth.accounts[index] === position.args.regAddr) {
         isMine = true
       }
     }
@@ -184,6 +175,60 @@ export function fetchPositions() {
     })
     .catch(error => {
       dispatch(fetchPositionsFailure(error))
+    })
+  }
+
+}
+
+export const VOTE_ON_POSITION_REQUEST = 'VOTE_ON_POSITION_REQUEST'
+export const VOTE_ON_POSITION_SUCCESS = 'VOTE_ON_POSITION_SUCCESS'
+export const VOTE_ON_POSITION_FAILURE = 'VOTE_ON_POSITION_FAILURE'
+
+export function voteOnPositionRequest() {
+  return {
+    type: VOTE_ON_POSITION_REQUEST
+  }
+}
+
+export function voteOnPositionSuccess(response) {
+  return {
+    type: VOTE_ON_POSITION_SUCCESS,
+    response
+  }
+}
+
+export function voteOnPositionFailure(error) {
+  return {
+    type: VOTE_ON_POSITION_FAILURE,
+    error
+  }
+}
+
+// Casts a a vote for against a given position for all accounts that are active.
+export function voteOnPosition(positionSignalAddress, vote) {
+
+  // If vote is true, it is a vote in favor of the given position.
+  // Else, it is a vote against the position.
+  const etherSignal = etherSignalContract.at(positionSignalAddress);
+
+  return dispatch => {
+    Promise.all(
+      web3.eth.accounts.map(account => {
+        return new Promise((resolve, reject) => {
+          try {
+            resolve(etherSignal.setSignal(vote, {from: account}))
+          }
+          catch (err) {
+            reject(err)
+          }
+        })
+      })
+    )
+    .then(response => {
+      dispatch(voteOnPositionSuccess(response))
+    })
+    .catch(error => {
+      dispatch(voteOnPositionFailure(error))
     })
   }
 

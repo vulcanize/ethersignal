@@ -6,7 +6,6 @@ import PositionSubmitter from './../ecosystems/PositionSubmitter'
 import Positions from './../ecosystems/Positions'
 
 import './../../styles/environments/Home.css'
-import './../../styles/molecules/PositionListItem.css'
 
 class Home extends Component {
 
