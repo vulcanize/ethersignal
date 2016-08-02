@@ -1,6 +1,7 @@
 import React, { PropTypes, Component } from 'react'
 
 import PositionListItem from './../molecules/PositionListItem'
+import LoadingAnimation from './../atoms/LoadingAnimation'
 
 import {
   ListGroup
@@ -12,6 +13,11 @@ class PositionList extends Component {
 
     return (
       <ListGroup>
+        {
+          this.props.positions.fetching &&
+          this.props.positions.items.length === 0 &&
+          <LoadingAnimation />
+        }
         {
           this.props.positions.items.map((position, index) => {
             return (
