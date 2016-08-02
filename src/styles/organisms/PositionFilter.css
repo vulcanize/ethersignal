@@ -1,0 +1,17 @@
+.position-filter {
+  display: flex;
+  align-items: center;
+  margin: 0 -.5em;
+}
+
+.position-filter > div {
+  margin: 0 .5em;
+}
+
+.position-filter .control-label {
+  margin-right: .5em;
+}
+
+.position-filter .icon {
+  margin-right: .5em;
+}

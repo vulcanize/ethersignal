@@ -14,12 +14,12 @@ class PositionList extends Component {
     return (
       <ListGroup>
         {
-          this.props.positions.fetching &&
-          this.props.positions.items.length === 0 &&
+          this.props.fetching &&
+          this.props.items.length === 0 &&
           <LoadingAnimation />
         }
         {
-          this.props.positions.items.map((position, index) => {
+          this.props.items.map((position, index) => {
             return (
               <PositionListItem
                 dispatch={this.props.dispatch}
@@ -35,8 +35,9 @@ class PositionList extends Component {
 }
 
 PositionList.propTypes = {
+  fetching: PropTypes.bool,
   dispatch: PropTypes.func,
-  positions: PropTypes.object
+  items: PropTypes.object
 }
 
 export default PositionList

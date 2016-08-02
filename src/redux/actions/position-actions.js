@@ -2,20 +2,22 @@
  * connection to local blockchain node.
  */
 
-/* global Web3 */
+/* global Web3, web3 */
 
 import etherSignalAbi from './abi/etherSignalAbi'
 import positionRegistryAbi from './abi/positionRegistryAbi'
 
 if (typeof web3 !== 'undefined' && typeof Web3 !== 'undefined') {
-	web3 = new Web3(web3.currentProvider);
-} else if (typeof Web3 !== 'undefined') {
-	web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'));
-	if(!web3.isConnected()) {
-		const Web3 = require('web3');
-		web3 = new Web3(new Web3.providers.HttpProvider('https://signal.ether.ai/proxy'));
-	}
+  web3 = new Web3(web3.currentProvider)
 }
+else if (typeof Web3 !== 'undefined') {
+  web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'))
+  if (!web3.isConnected()) {
+    const Web3 = require('web3')
+    web3 = new Web3(new Web3.providers.HttpProvider('https://signal.ether.ai/proxy'))
+  }
+}
+
 
 import {
   addTimedAlert
@@ -106,9 +108,11 @@ export function fetchPositions() {
       pro: Math.round(totalPro),
       against: Math.round(totalAgainst),
       percent: calcPercent(totalPro, totalAgainst),
+      absoluteSignal: totalPro + Math.abs(totalAgainst),
+      amplitudeSignal: totalPro - Math.abs(totalAgainst),
       sigAddr: position.args.sigAddr,
       deposit: deposit,
-      time: block.timestamp,
+      creationDate: block.timestamp,
       iHaveSignalled: iHaveSignalled,
       isMine: isMine
     }
@@ -213,7 +217,7 @@ export function voteOnPosition(positionSignalAddress, vote) {
 
   // If vote is true, it is a vote in favor of the given position.
   // Else, it is a vote against the position.
-  const etherSignal = etherSignalContract.at(positionSignalAddress);
+  const etherSignal = etherSignalContract.at(positionSignalAddress)
 
   return dispatch => {
     Promise.all(
@@ -307,9 +311,9 @@ export function submitNewPositionFailure(error) {
 export function submitNewPosition(title, description) {
 
   // Todo: there should be an account selector
-  const sender = web3.eth.accounts[0];
-  const data = positionRegistry.registerPosition.getData(title, description);
-  const gas = web3.eth.estimateGas({from: sender, to: address, data: data});
+  const sender = web3.eth.accounts[0]
+  const data = positionRegistry.registerPosition.getData(title, description)
+  const gas = web3.eth.estimateGas({from: sender, to: address, data: data})
 
   return dispatch => {
     dispatch(submitNewPositionRequest())
@@ -321,10 +325,61 @@ export function submitNewPosition(title, description) {
       )
       dispatch(addTimedAlert('The position was submitted!', 'success'))
       dispatch(submitNewPositionSuccess(result))
-    } catch (error) {
+    }
+    catch (error) {
       dispatch(addTimedAlert(error.message, 'danger'))
       dispatch(submitNewPositionFailure(error))
     }
   }
 
+}
+
+export const SET_POSITION_ORDER_BY = 'SET_POSITION_ORDER_BY'
+export const SET_POSITION_MINIMUM_VALUE_FILTER = 'SET_POSITION_MINIMUM_VALUE_FILTER'
+export const SET_POSITION_MINIMUM_VALUE_DENOMINATION = 'SET_POSITION_MINIMUM_VALUE_DENOMINATION'
+export const SET_POSITION_PAGINATION_ITEMS_TO_DISPLAY = 'SET_POSITION_PAGINATION_ITEMS_TO_DISPLAY'
+export const SET_POSITION_PAGINATION_CURRENT_PAGE = 'SET_POSITION_PAGINATION_CURRENT_PAGE'
+export const SET_POSITION_PAGINATION_NUMBER_OF_PAGES = 'SET_POSITION_PAGINATION_NUMBER_OF_PAGES'
+
+export function setPositionOrderBy(orderBy, direction) {
+  return {
+    type: SET_POSITION_ORDER_BY,
+    orderBy,
+    direction: direction || 'ASC'
+  }
+}
+
+export function setPositionMinimumValueFilter(minimumValue) {
+  return {
+    type: SET_POSITION_MINIMUM_VALUE_FILTER,
+    minimumValue
+  }
+}
+
+export function setPositionMiniumValueDenomination(denomination) {
+  return {
+    type: SET_POSITION_MINIMUM_VALUE_DENOMINATION,
+    denomination
+  }
+}
+
+export function setPositionPaginationItemsToDisplay(itemsToDisplay) {
+  return {
+    type: SET_POSITION_PAGINATION_ITEMS_TO_DISPLAY,
+    itemsToDisplay
+  }
+}
+
+export function setPositionPaginationCurrentPage(currentPage) {
+  return {
+    type: SET_POSITION_PAGINATION_CURRENT_PAGE,
+    currentPage
+  }
+}
+
+export function setPositionPaginationNumberOfPages(numberOfPages) {
+  return {
+    type: SET_POSITION_PAGINATION_NUMBER_OF_PAGES,
+    numberOfPages
+  }
 }

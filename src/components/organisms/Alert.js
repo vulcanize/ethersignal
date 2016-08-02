@@ -20,6 +20,10 @@ class Alert extends Component {
 
 }
 
-Alert.propTypes = {}
+Alert.propTypes = {
+  onClick: PropTypes.func,
+  severity: PropTypes.string,
+  text: PropTypes.string
+}
 
 export default Alert

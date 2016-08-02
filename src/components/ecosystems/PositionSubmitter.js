@@ -53,6 +53,7 @@ class PositionSubmitter extends Component {
 }
 
 PositionSubmitter.propTypes = {
+  dispatch: PropTypes.func,
   positions: PropTypes.object,
   connection: PropTypes.object
 }

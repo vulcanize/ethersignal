@@ -1,13 +1,14 @@
-/* global Web3 */
+/* global Web3, web3 */
 
 if (typeof web3 !== 'undefined' && typeof Web3 !== 'undefined') {
-	web3 = new Web3(web3.currentProvider);
-} else if (typeof Web3 !== 'undefined') {
-	web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'));
-	if(!web3.isConnected()) {
-		const Web3 = require('web3');
-		web3 = new Web3(new Web3.providers.HttpProvider('https://signal.ether.ai/proxy'));
-	}
+  web3 = new Web3(web3.currentProvider)
+}
+else if (typeof Web3 !== 'undefined') {
+  web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'))
+  if (!web3.isConnected()) {
+    const Web3 = require('web3')
+    web3 = new Web3(new Web3.providers.HttpProvider('https://signal.ether.ai/proxy'))
+  }
 }
 
 export const FETCH_NETWORK_STATUS_REQUEST = 'FETCH_NETWORK_STATUS_REQUEST'
@@ -37,10 +38,10 @@ export function fetchNetworkStatusFailure(error) {
 export function watchNetworkStatus() {
 
   function utcSecondsToString(timestamp) {
-		var date = new Date(0)
-		date.setUTCSeconds(timestamp)
-		return date.toString()
-	}
+    const date = new Date(0)
+    date.setUTCSeconds(timestamp)
+    return date.toString()
+  }
 
   return dispatch => {
     const latestStatus = web3.eth.filter('latest')

@@ -35,7 +35,11 @@ class PositionListItem extends Component {
 
         <h3>{this.props.position.title}</h3>
         <p>{this.props.position.desc}</p>
-        <p>{formatTime(this.props.position.time)}</p>
+        <p>{formatTime(this.props.position.creationDate)}</p>
+        <label>Absolute Signal</label>{' '}
+        <span>{this.props.position.absoluteSignal}</span><br />
+        <label>Amplitude of Signal</label>{' '}
+        <span>{this.props.position.amplitudeSignal}</span>
 
         <div className="voting-butons" style={{marginBottom: '1em'}}>
           <Button
@@ -55,18 +59,31 @@ class PositionListItem extends Component {
         </div>
 
         <div className="sentiment">
-          <ProgressBar>
-            <ProgressBar
-              bsStyle="success"
-              label={`${percentageInFavor}% in Favor`}
-              now={percentageInFavor}
-              key={1} />
-            <ProgressBar
-              bsStyle="danger"
-              label={`${percentageAgainst}% Against`}
-              now={percentageAgainst}
-              key={2} />
-          </ProgressBar>
+
+          {
+            (() => {
+              if (!this.props.position.pro && !this.props.position.against) {
+                return <ProgressBar now={0} />
+              }
+              else {
+                return (
+                  <ProgressBar>
+                    <ProgressBar
+                      bsStyle="success"
+                      label={`${percentageInFavor}% in Favor`}
+                      now={percentageInFavor}
+                      key={1} />
+                    <ProgressBar
+                      bsStyle="danger"
+                      label={`${percentageAgainst}% Against`}
+                      now={percentageAgainst}
+                      key={2} />
+                  </ProgressBar>
+                )
+              }
+            })()
+          }
+
         </div>
 
         <div className="statistics">
