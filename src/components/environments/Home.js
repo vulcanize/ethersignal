@@ -14,6 +14,7 @@ class Home extends Component {
       <article>
         <PositionSubmitter
           dispatch={this.props.dispatch}
+          positions={this.props.positions}
           connection={this.props.connection} />
         <Positions
           dispatch={this.props.dispatch}

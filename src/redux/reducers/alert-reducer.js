@@ -24,7 +24,6 @@ export default function(state = initialState, action) {
     return state.filter(item => item.id !== action.id)
 
   case REMOVE_TIMED_ALERT:
-    debugger
     return state.filter(item => {
       return item.text !== action.text &&
              item.severity !== action.severity

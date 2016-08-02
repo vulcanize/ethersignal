@@ -239,3 +239,92 @@ export function voteOnPosition(positionSignalAddress, vote) {
   }
 
 }
+
+export const SHOW_NEW_POSITION_MODAL = 'SHOW_NEW_POSITION_MODAL'
+export const HIDE_NEW_POSITION_MODAL = 'HIDE_NEW_POSITION_MODAL'
+
+export function showNewPositionModal() {
+  return {
+    type: SHOW_NEW_POSITION_MODAL
+  }
+}
+
+export function hideNewPositionModal() {
+  return {
+    type: HIDE_NEW_POSITION_MODAL
+  }
+}
+
+export const SET_NEW_POSITION_TITLE = 'SET_NEW_POSITION_TITLE'
+export const SET_NEW_POSITION_DESCRIPTION = 'SET_NEW_POSITION_DESCRIPTION'
+export const SET_NEW_POSITION_TITLE_VALIDATION_ERROR = 'SET_NEW_POSITION_TITLE_VALIDATION_ERROR'
+
+export function setNewPositionTitle(title) {
+  return {
+    type: SET_NEW_POSITION_TITLE,
+    title
+  }
+}
+
+export function setNewPositionDescription(description) {
+  return {
+    type: SET_NEW_POSITION_DESCRIPTION,
+    description
+  }
+}
+
+export function setNewPositionTitleValidationError(error) {
+  return {
+    type: SET_NEW_POSITION_TITLE_VALIDATION_ERROR,
+    error
+  }
+}
+
+export const SUBMIT_NEW_POSITION_REQUEST = 'SUBMIT_NEW_POSITION_REQUEST'
+export const SUBMIT_NEW_POSITION_SUCCESS = 'SUBMIT_NEW_POSITION_SUCCESS'
+export const SUBMIT_NEW_POSITION_FAILURE = 'SUBMIT_NEW_POSITION_FAILURE'
+
+export function submitNewPositionRequest() {
+  return {
+    type: SUBMIT_NEW_POSITION_REQUEST
+  }
+}
+
+export function submitNewPositionSuccess(response) {
+  return {
+    type: SUBMIT_NEW_POSITION_SUCCESS,
+    response
+  }
+}
+
+export function submitNewPositionFailure(error) {
+  return {
+    type: SUBMIT_NEW_POSITION_FAILURE,
+    error
+  }
+}
+
+export function submitNewPosition(title, description) {
+
+  // Todo: there should be an account selector
+  const sender = web3.eth.accounts[0];
+  const data = positionRegistry.registerPosition.getData(title, description);
+  const gas = web3.eth.estimateGas({from: sender, to: address, data: data});
+
+  return dispatch => {
+    dispatch(submitNewPositionRequest())
+    try {
+      const result = positionRegistry.registerPosition.sendTransaction(
+        title,
+        description,
+        { from: sender, to: address, gas: gas }
+      )
+      dispatch(addTimedAlert('The position was submitted!', 'success'))
+      dispatch(submitNewPositionSuccess(result))
+    } catch (error) {
+      dispatch(addTimedAlert(error.message, 'danger'))
+      dispatch(submitNewPositionFailure(error))
+    }
+  }
+
+}
