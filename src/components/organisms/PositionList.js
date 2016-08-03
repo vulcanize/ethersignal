@@ -37,7 +37,7 @@ class PositionList extends Component {
 PositionList.propTypes = {
   fetching: PropTypes.bool,
   dispatch: PropTypes.func,
-  items: PropTypes.object
+  items: PropTypes.array
 }
 
 export default PositionList

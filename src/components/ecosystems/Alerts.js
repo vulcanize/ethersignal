@@ -35,7 +35,7 @@ class Alerts extends Component {
 
 Alerts.propTypes = {
   alerts: PropTypes.array,
-  dispatch: PropTypes.dispatch
+  dispatch: PropTypes.func
 }
 
 export default connect(

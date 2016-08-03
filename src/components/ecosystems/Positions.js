@@ -63,9 +63,11 @@ class Positions extends Component {
     return (
       <Panel header={[
         <NetworkStatus
+          key={0}
           dispatch={this.props.dispatch}
           connection={this.props.connection} />,
         <PositionFilter
+          key={1}
           sort={this.props.positions.sort}
           filter={this.props.positions.filter}
           dispatch={this.props.dispatch} />
