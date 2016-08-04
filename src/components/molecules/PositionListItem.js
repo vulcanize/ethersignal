@@ -27,22 +27,23 @@ class PositionListItem extends Component {
           <h3>{this.props.position.title}</h3>
           <p>{this.props.position.desc}</p>
 
-          <label>Submitted by: </label>{' '}<span>{this.props.position.regAddr}</span><br />
-          <label>Deposit (finney): </label>{' '}<span>{this.props.position.deposit}</span><br />
+          <div>
+            <label>Submitted by:</label>
+            <div>{this.props.position.regAddr}</div>
+          </div>
 
-          <label>I have signalled?</label>{' '}<br />
-          <span>{this.props.position.iHaveSignalled ? 'true' : 'false'}</span><br />
-
-          <label>It is mine?</label>{' '}<br />
-          <span>{this.props.position.isMine ? 'true' : 'false'}</span><br />
+          <div>
+            <label>Deposit (finney)</label>
+            <div>{this.props.position.deposit}</div>
+          </div>
 
         </div>
 
         <div className="histogram">
-
+          <div className="baseline"></div>
         </div>
 
-        <div className="voting" style={{marginBottom: '1em'}}>
+        <div className="voting">
 
           <div className="voting-row">
             <Button
