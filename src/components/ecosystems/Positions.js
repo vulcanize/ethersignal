@@ -11,7 +11,24 @@ import {
   Panel
 } from 'react-bootstrap'
 
+import {
+  fetchPositions
+} from './../../redux/actions/position-actions'
+
 class Positions extends Component {
+
+  componentWillMount() {
+    this.fetchPositions()
+    this.polling = setInterval(this.fetchPositions.bind(this), 10000)
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.polling)
+  }
+
+  fetchPositions() {
+    this.props.dispatch(fetchPositions())
+  }
 
   processPositions(positions) {
 
@@ -38,7 +55,7 @@ class Positions extends Component {
       }
 
       return positions.filter(position => {
-        return position.amplitudeSignal * multiplier > minimumValue * multiplier
+        return position.deposit * multiplier > minimumValue * multiplier
       })
 
     }

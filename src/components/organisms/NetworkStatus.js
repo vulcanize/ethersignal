@@ -71,7 +71,7 @@ class NetworkStatus extends Component {
             <span>Disconnected</span>
         }{' '}
         <span>{this.state.syncState}</span>{' '}
-        <span>( Network )</span><br />
+        <span>()</span><br />
 
         <label>Current Block</label>{' '}
         <span>{this.props.connection.currentBlock}</span><br />
@@ -79,8 +79,13 @@ class NetworkStatus extends Component {
         <label>Current Block Time</label>{' '}
         <span>{this.props.connection.currentBlockTime}</span><br />
 
-        <label>Since Last Block</label>{' '}
-        <span>{this.state.secondsSinceLastBlock} seconds</span>
+        {
+          this.props.connection.connected &&
+          <div>
+            <label>Since Last Block</label>{' '}
+            <span>{this.state.secondsSinceLastBlock} seconds</span>
+          </div>
+        }
 
       </samp>
     )

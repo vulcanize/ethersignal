@@ -31,15 +31,13 @@ class PositionListItem extends Component {
     }
 
     return (
-      <section className="position-list-item">
+    <section className="position-list-item">
 
         <h3>{this.props.position.title}</h3>
         <p>{this.props.position.desc}</p>
         <p>{formatTime(this.props.position.creationDate)}</p>
         <label>Absolute Signal</label>{' '}
         <span>{this.props.position.absoluteSignal}</span><br />
-        <label>Amplitude of Signal</label>{' '}
-        <span>{this.props.position.amplitudeSignal}</span>
 
         <div className="voting-butons" style={{marginBottom: '1em'}}>
           <Button

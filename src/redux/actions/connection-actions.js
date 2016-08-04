@@ -11,10 +11,6 @@ else if (typeof Web3 !== 'undefined') {
   }
 }
 
-import {
-  fetchPositions
-} from './../actions/position-actions'
-
 import moment from 'moment'
 
 export const GET_ACCOUNTS = 'GET_ACCOUNTS'
@@ -72,8 +68,6 @@ export function watchNetworkStatus() {
     const latestStatus = web3.eth.filter('latest')
 
     latestStatus.watch((err, blockHash) => {
-
-      dispatch(fetchPositions())
 
       return new Promise((resolve, reject) => {
         web3.eth.getBlock(blockHash, false, function(err, block) {

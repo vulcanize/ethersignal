@@ -54,8 +54,8 @@ class PositionFilter extends Component {
             <option value="absoluteSignal.asc">Absolute Signal (Lowest First)</option>
             <option value="creationDate.desc">Creation Date (Newest First)</option>
             <option value="creationDate.asc">Creation Date (Oldest First)</option>
-            <option value="amplitudeSignal.desc">Amplitude (Highest First)</option>
-            <option value="amplitudeSignal.asc">Amplitude (Lowest First)</option>
+            <option value="deposit.desc">Amplitude (Highest First)</option>
+            <option value="deposit.asc">Amplitude (Lowest First)</option>
           </FormControl>
         </FormGroup>
 

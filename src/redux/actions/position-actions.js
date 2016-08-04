@@ -109,7 +109,6 @@ export function fetchPositions() {
       against: Math.round(totalAgainst),
       percent: calcPercent(totalPro, totalAgainst),
       absoluteSignal: totalPro + Math.abs(totalAgainst),
-      amplitudeSignal: totalPro - Math.abs(totalAgainst),
       sigAddr: position.args.sigAddr,
       deposit: deposit,
       creationDate: block.timestamp,
