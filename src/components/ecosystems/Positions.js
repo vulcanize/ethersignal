@@ -55,7 +55,7 @@ class Positions extends Component {
       }
 
       return positions.filter(position => {
-        return position.deposit * multiplier > minimumValue * multiplier
+        return position.deposit * multiplier > minimumValue
       })
 
     }
