@@ -11,6 +11,23 @@ else if (typeof Web3 !== 'undefined') {
   }
 }
 
+export const GET_ACCOUNTS = 'GET_ACCOUNTS'
+export const SET_SELECTED_ACCOUNT = 'SET_SELECTED_ACCOUNT'
+
+export function getAccounts() {
+  return {
+    type: GET_ACCOUNTS,
+    accounts: web3.eth.accounts
+  }
+}
+
+export function setSelectedAccount(selectedAccount) {
+  return {
+    type: SET_SELECTED_ACCOUNT,
+    selectedAccount
+  }
+}
+
 export const FETCH_NETWORK_STATUS_REQUEST = 'FETCH_NETWORK_STATUS_REQUEST'
 export const FETCH_NETWORK_STATUS_SUCCESS = 'FETCH_NETWORK_STATUS_SUCCESS'
 export const FETCH_NETWORK_STATUS_FAILURE = 'FETCH_NETWORK_STATUS_FAILURE'

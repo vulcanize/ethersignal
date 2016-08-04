@@ -44,6 +44,7 @@ class PositionSubmitter extends Component {
           showModal={this.props.positions.showModal}
           title={this.props.positions.newPosition.title}
           titleValidationError={this.props.positions.newPosition.titleValidationError}
+          connection={this.props.connection}
           description={this.props.positions.newPosition.description} />
 
       </div>

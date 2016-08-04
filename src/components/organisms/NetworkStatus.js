@@ -3,7 +3,7 @@ import React, { PropTypes, Component } from 'react'
 import './../../styles/organisms/NetworkStatus.css'
 
 import {
-  watchNetworkStatus
+  watchNetworkStatus,
 } from './../../redux/actions/connection-actions'
 
 class NetworkStatus extends Component {

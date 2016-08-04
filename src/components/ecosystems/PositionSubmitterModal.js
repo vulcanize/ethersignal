@@ -12,6 +12,7 @@ import {
 } from './../../redux/actions/position-actions'
 
 import PositionSubmitterForm from './../organisms/PositionSubmitterForm'
+import AccountSelector from './../organisms/AccountSelector'
 
 class PositionSubmitterModal extends Component {
 
@@ -30,7 +31,8 @@ class PositionSubmitterModal extends Component {
 
     this.props.dispatch(submitNewPosition(
       this.props.title,
-      this.props.description
+      this.props.description,
+      this.props.connection.account.selectedAccount
     ))
 
   }
@@ -51,6 +53,10 @@ class PositionSubmitterModal extends Component {
             title={this.props.title}
             description={this.props.description}
             titleValidationError={this.props.titleValidationError} />
+          <AccountSelector
+            selectedAccount={this.props.connection.account.selectedAccount}
+            accounts={this.props.connection.account.items}
+            dispatch={this.props.dispatch} />
         </Modal.Body>
 
         <Modal.Footer>

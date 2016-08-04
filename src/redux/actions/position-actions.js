@@ -308,10 +308,10 @@ export function submitNewPositionFailure(error) {
   }
 }
 
-export function submitNewPosition(title, description) {
+export function submitNewPosition(title, description, account) {
 
   // Todo: there should be an account selector
-  const sender = web3.eth.accounts[0]
+  const sender = account
   const data = positionRegistry.registerPosition.getData(title, description)
   const gas = web3.eth.estimateGas({from: sender, to: address, data: data})
 
