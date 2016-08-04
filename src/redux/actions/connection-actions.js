@@ -11,6 +11,12 @@ else if (typeof Web3 !== 'undefined') {
   }
 }
 
+import {
+  fetchPositions
+} from './../actions/position-actions'
+
+import moment from 'moment'
+
 export const GET_ACCOUNTS = 'GET_ACCOUNTS'
 export const SET_SELECTED_ACCOUNT = 'SET_SELECTED_ACCOUNT'
 
@@ -55,15 +61,20 @@ export function fetchNetworkStatusFailure(error) {
 export function watchNetworkStatus() {
 
   function utcSecondsToString(timestamp) {
-    const date = new Date(0)
-    date.setUTCSeconds(timestamp)
-    return date.toString()
+    return moment(timestamp * 1000).toDate().toString()
+  }
+
+  function getTimeSinceLastBlock(timestamp) {
+    return Math.round(moment().diff(moment(timestamp * 1000)) / 1000)
   }
 
   return dispatch => {
     const latestStatus = web3.eth.filter('latest')
 
     latestStatus.watch((err, blockHash) => {
+
+      dispatch(fetchPositions())
+
       return new Promise((resolve, reject) => {
         web3.eth.getBlock(blockHash, false, function(err, block) {
           if (err) reject(err)
@@ -75,7 +86,7 @@ export function watchNetworkStatus() {
           connected: true,
           currentBlock: response.number,
           currentBlockTime: utcSecondsToString(response.timestamp),
-          secondsSinceLastBlock: 0
+          secondsSinceLastBlock: getTimeSinceLastBlock(response.timestamp)
         }))
       })
       .catch(error => {
