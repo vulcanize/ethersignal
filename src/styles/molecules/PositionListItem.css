@@ -1,15 +1,38 @@
 .position-list-item {
-
+  display: flex;
+  align-items: center;
+  margin: 0 -1em;
 }
 
-.voting-buttons {
+.position-list-item > div {
+  margin: 0 1em;
+}
+
+.voting {
+  margin-bottom: 1em;
+  display: flex;
+  flex-direction: column;
+}
+
+.voting button {
+  font-size: 2em;
+  margin-right: .5em;
+}
+
+.voting .voting-row {
+  display: flex;
+  align-items: center;
+  line-height: 1.5em;
   margin-bottom: 1em;
 }
 
-.sentiment {
-  margin-bottom: 1em;
+.voting .voting-count label {
+  display: block;
+  margin-bottom: 0;
+  color: #666;
+  font-weight: 400;
 }
 
-.statistics {
-
+.voting .voting-number {
+  font-size: 2em;
 }

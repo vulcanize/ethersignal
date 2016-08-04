@@ -344,7 +344,7 @@ export function setPositionOrderBy(orderBy, direction) {
   return {
     type: SET_POSITION_ORDER_BY,
     orderBy,
-    direction: direction || 'ASC'
+    direction
   }
 }
 
