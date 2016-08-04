@@ -65,7 +65,7 @@ export function watchNetworkStatus() {
   }
 
   function getTimeSinceLastBlock(timestamp) {
-    return Math.round(moment().diff(moment(timestamp * 1000)) / 1000)
+    return Math.floor(moment().diff(moment(timestamp * 1000)) / 1000)
   }
 
   return dispatch => {
