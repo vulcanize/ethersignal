@@ -13,7 +13,6 @@ import {
 class PositionListItem extends Component {
 
   vote(proposalId, vote) {
-    // If a selected account is not available, alert the user.
     this.props.dispatch(voteOnPosition(proposalId, vote))
   }
 
