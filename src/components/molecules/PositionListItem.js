@@ -7,14 +7,22 @@ import {
 } from 'react-bootstrap'
 
 import {
-  voteOnPosition
+  voteOnPosition,
+  displayPositionDepositModal
 } from './../../redux/actions/position-actions'
 
 class PositionListItem extends Component {
 
   vote(proposalId, vote) {
-    // If a selected account is not available, alert the user.
+    // TODO: If a selected account is not available, alert the user.
     this.props.dispatch(voteOnPosition(proposalId, vote))
+  }
+
+  addPositionDeposit() {
+    this.props.dispatch(displayPositionDepositModal(
+      this.props.account,
+      this.props.position.sigAddr
+    ))
   }
 
   render() {
@@ -32,9 +40,25 @@ class PositionListItem extends Component {
             <div>{this.props.position.regAddr}</div>
           </div>
 
-          <div>
-            <label>Deposit (finney)</label>
-            <div>{this.props.position.deposit}</div>
+          <div className="deposit">
+
+            <div className="current-deposit">
+              <label>Deposit (finney)</label>
+              <div>{this.props.position.deposit}</div>
+            </div>
+
+            {' '}
+
+            {
+              this.props.position.isMine &&
+              <Button
+                onClick={this.addPositionDeposit.bind(this)}
+                bsStyle="success">
+                <Glyphicon glyph="plus" />{' '}
+                Add Deposit
+              </Button>
+            }
+
           </div>
 
         </div>
@@ -79,7 +103,8 @@ class PositionListItem extends Component {
 
 PositionListItem.propTypes = {
   dispatch: PropTypes.func,
-  position: PropTypes.object
+  position: PropTypes.object,
+  account: PropTypes.string
 }
 
 export default PositionListItem

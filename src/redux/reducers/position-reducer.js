@@ -16,7 +16,12 @@ import {
   SET_POSITION_MINIMUM_VALUE_DENOMINATION,
   SET_POSITION_PAGINATION_ITEMS_TO_DISPLAY,
   SET_POSITION_PAGINATION_CURRENT_PAGE,
-  SET_POSITION_PAGINATION_NUMBER_OF_PAGES
+  SET_POSITION_PAGINATION_NUMBER_OF_PAGES,
+  DISPLAY_POSITION_DEPOSIT_MODAL,
+  HIDE_POSITION_DEPOSIT_MODAL,
+  SET_POSITION_DEPOSIT_VALUE,
+  SET_POSITION_DEPOSIT_VALIDATION_ERROR,
+  SET_POSITION_DEPOSIT_DENOMINATION
 } from './../actions/position-actions'
 
 const initialState = {
@@ -40,12 +45,56 @@ const initialState = {
     title: '',
     description: '',
     titleValidationError: ''
+  },
+  depositModal: {
+    showModal: false,
+    senderAddr: '',
+    recipientAddr: '',
+    value: '',
+    valueValidationError: '',
+    denomination: 'Finney'
   }
 }
 
 export default function positionReducer(state = initialState, action) {
 
   switch (action.type) {
+
+  case DISPLAY_POSITION_DEPOSIT_MODAL:
+    return Object.assign({}, state, {
+      depositModal: Object.assign({}, state.depositModal, {
+        showModal: true,
+        senderAddr: action.senderAddr,
+        recipientAddr: action.recipientAddr
+      })
+    })
+
+  case HIDE_POSITION_DEPOSIT_MODAL:
+    return Object.assign({}, state, {
+      depositModal: Object.assign({}, initialState.depositModal)
+    })
+
+  case SET_POSITION_DEPOSIT_VALUE:
+    return Object.assign({}, state, {
+      depositModal: Object.assign({}, state.depositModal, {
+        value: action.value,
+        valueValidationError: ''
+      })
+    })
+
+  case SET_POSITION_DEPOSIT_VALIDATION_ERROR:
+  return Object.assign({}, state, {
+    depositModal: Object.assign({}, state.depositModal, {
+      valueValidationError: action.error
+    })
+  })
+
+  case SET_POSITION_DEPOSIT_DENOMINATION:
+    return Object.assign({}, state, {
+      depositModal: Object.assign({}, state.depositModal, {
+        denomination: action.denomination
+      })
+    })
 
   case FETCH_POSITIONS_REQUEST:
     return Object.assign({}, state, {

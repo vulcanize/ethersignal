@@ -4,6 +4,7 @@ import NetworkStatus from './../organisms/NetworkStatus'
 import PositionFilter from './../organisms/PositionFilter'
 import PositionList from './../organisms/PositionList'
 import PositionPagination from './../organisms/PositionPagination'
+import PositionDepositModal from './../organisms/PositionDepositModal'
 
 import _ from 'lodash'
 
@@ -95,11 +96,19 @@ class Positions extends Component {
           pagination={this.props.positions.pagination}
           dispatch={this.props.dispatch} />
       }>
+        <PositionDepositModal
+          value={this.props.positions.depositModal.value}
+          valueValidationError={this.props.positions.depositModal.valueValidationError}
+          denomination={this.props.positions.depositModal.denomination}
+          showModal={this.props.positions.depositModal.showModal}
+          senderAddr={this.props.positions.depositModal.senderAddr}
+          recipientAddr={this.props.positions.depositModal.recipientAddr}
+          dispatch={this.props.dispatch} />
         <PositionList
           fetching={this.props.positions.fetching}
+          account={this.props.connection.account.selectedAccount}
           items={positions.length ? positions[index] : []}
           dispatch={this.props.dispatch} />
-
       </Panel>
     )
   }
