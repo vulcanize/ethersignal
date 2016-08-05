@@ -118,7 +118,7 @@ export function fetchPositions() {
 
   }
 
-  function getSignatureList(position, deposit, block) {
+  function getSignalList(position, deposit, block) {
 
     const address = position.args.sigAddr
     const etherSignal = etherSignalContract.at(address)
@@ -174,7 +174,7 @@ export function fetchPositions() {
           web3.eth.getBalance(position.args.sigAddr),
           'finney'
         ))
-        return getSignatureList(position, deposit, block)
+        return getSignalList(position, deposit, block)
       }))
     })
     .then(positions => {
