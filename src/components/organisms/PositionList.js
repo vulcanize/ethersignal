@@ -12,23 +12,24 @@ class PositionList extends Component {
   render() {
 
     return (
-      <ListGroup>
-        {
-          this.props.fetching &&
-          this.props.items.length === 0 &&
-          <LoadingAnimation />
-        }
-        {
-          this.props.items.map((position, index) => {
-            return (
-              <PositionListItem
-                dispatch={this.props.dispatch}
-                position={position}
-                key={index} />
-            )
-          })
-        }
-      </ListGroup>
+        <ListGroup>
+          {
+            this.props.fetching &&
+            this.props.items.length === 0 &&
+            <LoadingAnimation />
+          }
+          {
+            this.props.items.map((position, index) => {
+              return (
+                <PositionListItem
+                  account={this.props.account}
+                  dispatch={this.props.dispatch}
+                  position={position}
+                  key={index} />
+              )
+            })
+          }
+        </ListGroup>
     )
   }
 
@@ -37,7 +38,8 @@ class PositionList extends Component {
 PositionList.propTypes = {
   fetching: PropTypes.bool,
   dispatch: PropTypes.func,
-  items: PropTypes.array
+  items: PropTypes.array,
+  account: PropTypes.string
 }
 
 export default PositionList

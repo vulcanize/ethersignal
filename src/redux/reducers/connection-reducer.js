@@ -22,7 +22,10 @@ export default function connectionReducer(state = initialState, action) {
   case GET_ACCOUNTS:
     return Object.assign({}, state, {
       account: Object.assign({}, state.account, {
-        items: action.accounts
+        items: action.accounts,
+        selectedAccount: !state.account.selectedAccount ?
+                         action.accounts[0] :
+                         state.account.selectedAccount
       })
     })
 

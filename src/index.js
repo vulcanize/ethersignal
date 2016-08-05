@@ -30,6 +30,12 @@ import './index.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'animate.css'
 
+import {
+  getAccounts
+} from './redux/actions/connection-actions'
+
+store.dispatch(getAccounts())
+
 render(
   <Provider store={store}>
     <Router history={browserHistory}>

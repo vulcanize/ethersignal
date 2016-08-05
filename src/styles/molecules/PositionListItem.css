@@ -20,6 +20,14 @@
   margin-bottom: 1em;
 }
 
+.position-list-item .deposit {
+  display: flex;
+}
+
+.position-list-item .current-deposit {
+  margin-right: .5em;
+}
+
 .voting {
   margin-bottom: 1em;
   display: flex;

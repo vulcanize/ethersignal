@@ -382,3 +382,111 @@ export function setPositionPaginationNumberOfPages(numberOfPages) {
     numberOfPages
   }
 }
+
+export const DISPLAY_POSITION_DEPOSIT_MODAL = 'DISPLAY_POSITION_DEPOSIT_MODAL'
+export const HIDE_POSITION_DEPOSIT_MODAL = 'HIDE_POSITION_DEPOSIT_MODAL'
+export const SET_POSITION_DEPOSIT_VALUE = 'SET_POSITION_DEPOSIT_VALUE'
+export const SET_POSITION_DEPOSIT_DENOMINATION = 'SET_POSITION_DEPOSIT_DENOMINATION'
+export const SET_POSITION_DEPOSIT_VALIDATION_ERROR = 'SET_POSITION_DEPOSIT_VALIDATION_ERROR'
+export const ADD_POSITION_DEPOSIT_REQUEST = 'ADD_POSITION_DEPOSIT_REQUEST'
+export const ADD_POSITION_DEPOSIT_SUCCESS = 'ADD_POSITION_DEPOSIT_SUCCESS'
+export const ADD_POSITION_DEPOSIT_FAILURE = 'ADD_POSITION_DEPOSIT_FAILURE'
+
+export function displayPositionDepositModal(senderAddr, recipientAddr) {
+  return {
+    type: DISPLAY_POSITION_DEPOSIT_MODAL,
+    senderAddr,
+    recipientAddr
+  }
+}
+
+export function hidePositionDepositModal() {
+  return {
+    type: HIDE_POSITION_DEPOSIT_MODAL
+  }
+}
+
+export function setPositionDepositValue(value) {
+  return {
+    type: SET_POSITION_DEPOSIT_VALUE,
+    value
+  }
+}
+
+export function setPositionDepositDenomination(denomination) {
+  return {
+    type: SET_POSITION_DEPOSIT_DENOMINATION,
+    denomination
+  }
+}
+
+export function setPositionDepositValidationError(error) {
+  return {
+    type: SET_POSITION_DEPOSIT_VALIDATION_ERROR,
+    error
+  }
+}
+
+export function addPositionDepositRequest() {
+  return {
+    type: ADD_POSITION_DEPOSIT_REQUEST
+  }
+}
+
+export function addPositionDepositSuccess(response) {
+  return {
+    type: ADD_POSITION_DEPOSIT_REQUEST,
+    response
+  }
+}
+
+export function addPositionDepositFailure(error) {
+  return {
+    type: ADD_POSITION_DEPOSIT_FAILURE,
+    error
+  }
+}
+
+function denominationToWeiConverter(value, denomination) {
+
+  switch (denomination) {
+
+  case 'Ether':
+    return value * Math.pow(10, 18)
+  case 'Finney':
+    return value * Math.pow(10, 15)
+  case 'Wei':
+  default:
+    return value
+
+  }
+
+}
+
+export function addPositionDeposit(value, denomination, senderAddr, recipientAddr) {
+
+  return dispatch => {
+    dispatch(addPositionDepositRequest())
+    return new Promise((resolve, reject) => {
+      web3.eth.sendTransaction({
+        value: denominationToWeiConverter(value, denomination),
+        from: senderAddr,
+        to: recipientAddr
+      }, (err, result) => {
+        if (err) reject(err)
+        resolve(result)
+      })
+    })
+    .then(response => {
+      dispatch(addTimedAlert('The deposit was submitted successfully', 'success'))
+      dispatch(hidePositionDepositModal())
+      dispatch(addPositionDepositSuccess(response))
+    })
+    .catch(error => {
+      dispatch(addTimedAlert('The transaction was not confirmed', 'danger'))
+      dispatch(hidePositionDepositModal())
+      dispatch(addPositionDepositFailure(error))
+    })
+  }
+
+}
