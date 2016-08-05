@@ -1,0 +1,18 @@
+.position-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 -1em;
+}
+
+.position-pagination > div {
+  margin: 0 1em;
+}
+
+.position-pagination ul.pagination {
+  margin: 0;
+}
+
+.position-pagination .control-label {
+  margin-right: .5em;
+}

@@ -1,0 +1,65 @@
+.position-list-item {
+  display: flex;
+  align-items: center;
+  margin: 1em -1em;
+}
+
+.position-list-item > div {
+  margin: 0 1em;
+}
+
+.position-list-item .statistics {
+  width: 50%;
+}
+
+.position-list-item .statistics label {
+  margin-bottom: 0;
+}
+
+.position-list-item .statistics > div {
+  margin-bottom: 1em;
+}
+
+.voting {
+  margin-bottom: 1em;
+  display: flex;
+  flex-direction: column;
+}
+
+.voting button {
+  font-size: 2em;
+  margin-right: .5em;
+}
+
+.voting .voting-row {
+  display: flex;
+  align-items: center;
+  line-height: 1.5em;
+  margin: .5em 0;
+}
+
+.voting .voting-count label {
+  display: block;
+  margin-bottom: 0;
+  color: #333;
+  font-weight: 400;
+}
+
+.voting .voting-number {
+  font-size: 2em;
+}
+
+.histogram {
+  width: 200px;
+  height: 150px;
+  background: #efefef;
+  border: 3px solid #999999;
+  display: flex;
+  align-items: center;
+}
+
+.histogram .baseline {
+  height: 2px;
+  background: #999999;
+  width: 100%;
+}
