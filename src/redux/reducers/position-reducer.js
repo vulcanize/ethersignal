@@ -83,11 +83,11 @@ export default function positionReducer(state = initialState, action) {
     })
 
   case SET_POSITION_DEPOSIT_VALIDATION_ERROR:
-  return Object.assign({}, state, {
-    depositModal: Object.assign({}, state.depositModal, {
-      valueValidationError: action.error
+    return Object.assign({}, state, {
+      depositModal: Object.assign({}, state.depositModal, {
+        valueValidationError: action.error
+      })
     })
-  })
 
   case SET_POSITION_DEPOSIT_DENOMINATION:
     return Object.assign({}, state, {

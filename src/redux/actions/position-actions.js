@@ -1,3 +1,9 @@
+const API_KEY = process.env.ETHERSCAN_API_KEY
+
+import querystring from 'querystring'
+import fetch from 'isomorphic-fetch'
+import getSignalPerBlock from './utils/getSignalPerBlock'
+
 /*
  * connection to local blockchain node.
  */
@@ -17,7 +23,6 @@ else if (typeof Web3 !== 'undefined') {
     web3 = new Web3(new Web3.providers.HttpProvider('https://signal.ether.ai/proxy'))
   }
 }
-
 
 import {
   addTimedAlert
@@ -101,20 +106,26 @@ export function fetchPositions() {
       }
     }
 
-    return {
-      title: position.args.title,
-      desc: position.args.text,
-      regAddr: position.args.regAddr,
-      pro: Math.round(totalPro),
-      against: Math.round(totalAgainst),
-      percent: calcPercent(totalPro, totalAgainst),
-      absoluteSignal: totalPro + Math.abs(totalAgainst),
-      sigAddr: position.args.sigAddr,
-      deposit: deposit,
-      creationDate: block.timestamp,
-      iHaveSignalled: iHaveSignalled,
-      isMine: isMine
-    }
+    return getPositionSignalHistory(position.args.sigAddr)
+    .then(history => {
+
+      return {
+        title: position.args.title,
+        desc: position.args.text,
+        regAddr: position.args.regAddr,
+        pro: Math.round(totalPro),
+        against: Math.round(totalAgainst),
+        percent: calcPercent(totalPro, totalAgainst),
+        absoluteSignal: totalPro + Math.abs(totalAgainst),
+        sigAddr: position.args.sigAddr,
+        deposit: deposit,
+        creationDate: block.timestamp,
+        iHaveSignalled: iHaveSignalled,
+        isMine: isMine,
+        history: history
+      }
+
+    })
 
   }
 
@@ -488,5 +499,85 @@ export function addPositionDeposit(value, denomination, senderAddr, recipientAdd
       dispatch(addPositionDepositFailure(error))
     })
   }
+
+}
+
+export const GET_POSITION_SIGNAL_HISTORY_REQUEST = 'GET_POSITION_SIGNAL_HISTORY_REQUEST'
+export const GET_POSITION_SIGNAL_HISTORY_SUCCESS = 'GET_POSITION_SIGNAL_HISTORY_SUCCESS'
+export const GET_POSITION_SIGNAL_HISTORY_FAILURE = 'GET_POSITION_SIGNAL_HISTORY_FAILURE'
+
+export function getPositionSignalHistoryRequest() {
+  return {
+    type: GET_POSITION_SIGNAL_HISTORY_REQUEST
+  }
+}
+
+export function getPositionSignalHistorySuccess(response) {
+  return {
+    type: GET_POSITION_SIGNAL_HISTORY_SUCCESS,
+    response
+  }
+}
+
+export function getPositionSignalHistoryFailure(error) {
+  return {
+    type: GET_POSITION_SIGNAL_HISTORY_FAILURE,
+    error
+  }
+}
+
+export function getPositionSignalHistory(contractAddress, opts) {
+
+  const URL = 'http://testnet.etherscan.io/api'
+
+  if (!opts) {
+    opts = {}
+  }
+
+  const params = {
+    module: 'account',
+    action: 'txlist',
+    address: contractAddress,
+    startblock: opts.startblock || 0,
+    endblock: opts.endblock || 99999999,
+    sort: opts.sort || 'asc',
+    apikey: API_KEY
+  }
+
+  const query = querystring.stringify(params)
+
+  return fetch(`${URL}?${query}`, {
+    method: 'GET'
+  })
+  .then(response => response.json())
+  .then(response => {
+    return Promise.all(
+
+      response.result.map(transaction => {
+
+        return new Promise((resolve, reject) => {
+
+          web3.eth.getBalance(transaction.from, transaction.blockNumber, (err, balance) => {
+
+            if (!balance) {
+              console.log('No balance was returned for this transaction') // eslint-disable-line no-console
+              console.log(transaction) // eslint-disable-line no-console
+            }
+
+            resolve({
+              from: transaction.from,
+              blockNumber: transaction.blockNumber,
+              signal: balance,
+              vote: transaction.input.slice(-1)
+            })
+
+          })
+        })
+      })
+    )
+  })
+  .then(response => {
+    return getSignalPerBlock(response)
+  })
 
 }

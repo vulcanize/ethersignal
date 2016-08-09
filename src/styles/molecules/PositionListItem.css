@@ -9,7 +9,7 @@
 }
 
 .position-list-item .statistics {
-  width: 50%;
+  width: 40%;
 }
 
 .position-list-item .statistics label {
@@ -55,15 +55,6 @@
 
 .voting .voting-number {
   font-size: 2em;
-}
-
-.histogram {
-  width: 200px;
-  height: 150px;
-  background: #efefef;
-  border: 3px solid #999999;
-  display: flex;
-  align-items: center;
 }
 
 .histogram .baseline {
