@@ -11,6 +11,8 @@ import {
   displayPositionDepositModal
 } from './../../redux/actions/position-actions'
 
+import SignalChart from './../organisms/SignalChart'
+
 class PositionListItem extends Component {
 
   vote(proposalId, vote) {
@@ -63,9 +65,7 @@ class PositionListItem extends Component {
 
         </div>
 
-        <div className="histogram">
-          <div className="baseline"></div>
-        </div>
+        <SignalChart data={this.props.position.history} />
 
         <div className="voting">
 
