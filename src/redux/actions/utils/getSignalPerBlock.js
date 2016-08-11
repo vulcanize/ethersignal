@@ -68,14 +68,6 @@ module.exports = function getSignalPerBlock(input) {
 
   }
 
-  const output = calculateSignal(backfillHistory(groupByBlockNumber(removeUnclearVotes(input))))
-
-  if (output.length === 1) {
-    output.unshift(Object.assign({}, output[0], {
-      blockNumber: String(output[0].blockNumber - 10)
-    }))
-  }
-
-  return output
+  return calculateSignal(backfillHistory(groupByBlockNumber(removeUnclearVotes(input))))
 
 }
