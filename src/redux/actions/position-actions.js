@@ -29,7 +29,7 @@ import {
 } from './alert-actions'
 
 /*
- * What contracts are we interested in?
+* What contracts are we interested in?
  */
 
 const etherSignalContract = web3.eth.contract(etherSignalAbi)
@@ -81,6 +81,7 @@ export function fetchPositions() {
     let totalAgainst = 0
     let isMine = false
     let iHaveSignalled = false
+    let myVote
 
     // Call getBalance once per address
     for (const address in proMap) {
@@ -92,11 +93,17 @@ export function fetchPositions() {
       totalPro += parseFloat(proMap[address])
       totalAgainst += parseFloat(againstMap[address])
 
-      for (const index in web3.eth.accounts) {
-        if (web3.eth.accounts[index] === address) {
+      web3.eth.accounts.find(account => {
+        if (address === account) {
           iHaveSignalled = true
+          if (proMap[address]) {
+            myVote = 'pro'
+          }
+          else if (againstMap[address]) {
+            myVote = 'against'
+          }
         }
-      }
+      })
 
     }
 
@@ -122,6 +129,7 @@ export function fetchPositions() {
         creationDate: block.timestamp,
         iHaveSignalled: iHaveSignalled,
         isMine: isMine,
+        myVote: myVote,
         history: history
       }
 
