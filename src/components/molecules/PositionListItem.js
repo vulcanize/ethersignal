@@ -77,7 +77,7 @@ class PositionListItem extends Component {
             </Button>
             <div className="voting-count">
               <label>In Favor</label>
-              <span className="voting-number">{this.props.position.pro}</span>
+              <span className="voting-number">{this.props.position.pro} eth</span>
             </div>
           </div>
 
@@ -89,7 +89,7 @@ class PositionListItem extends Component {
             </Button>
             <div className="voting-count">
               <label>Against</label>
-              <span className="voting-number">{this.props.position.against}</span>
+              <span className="voting-number">{this.props.position.against} eth</span>
             </div>
           </div>
 
