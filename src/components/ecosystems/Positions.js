@@ -19,15 +19,6 @@ import {
 class Positions extends Component {
 
   componentWillMount() {
-    this.fetchPositions()
-    this.polling = setInterval(this.fetchPositions.bind(this), 10000)
-  }
-
-  componentWillUnmount() {
-    clearInterval(this.polling)
-  }
-
-  fetchPositions() {
     this.props.dispatch(fetchPositions())
   }
 
