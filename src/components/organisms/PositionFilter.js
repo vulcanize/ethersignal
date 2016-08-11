@@ -63,6 +63,7 @@ class PositionFilter extends Component {
           <ControlLabel>Minimum Value</ControlLabel>
           <InputGroup>
             <FormControl
+              min="0"
               value={this.props.filter.minimumValue}
               onChange={this.setMinimumValue.bind(this)}
               type="number" />
@@ -72,6 +73,7 @@ class PositionFilter extends Component {
               id="minimumCostCurrency"
               title={this.props.filter.denomination}>
               <MenuItem eventKey="Ether">Ether</MenuItem>
+              <MenuItem eventKey="Finney">Finney</MenuItem>
               <MenuItem eventKey="Wei">Wei</MenuItem>
             </DropdownButton>
           </InputGroup>
