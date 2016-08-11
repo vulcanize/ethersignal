@@ -41,17 +41,33 @@ class Positions extends Component {
 
     function filterPositions(positions) {
 
+      /*
+       * deposit values are returned by the ABI as finney.
+       */
+
       if (minimumValue === '') return positions
-      let multiplier = 1
+
+      let multiplier
 
       switch (denomination) {
 
       case 'Wei':
-        multiplier = Math.pow(10, 18)
+        // If input is in wei, multiply the deposit value by: 1e^15
+        multiplier = Math.pow(10, 15)
+        break
+
+      case 'Finney':
+        // If input is in finney, good to go.
+        multiplier = 1
         break
 
       case 'Ether':
+        // If input is in ether, divide the input by 1000 to convert to finney
+        multiplier = (1 / 1000)
+        break
+
       default:
+        multiplier = 1
         break
       }
 
