@@ -13,6 +13,10 @@ else if (typeof Web3 !== 'undefined') {
 
 import moment from 'moment'
 
+import {
+  fetchPositions
+} from './../../redux/actions/position-actions'
+
 export const GET_ACCOUNTS = 'GET_ACCOUNTS'
 export const SET_SELECTED_ACCOUNT = 'SET_SELECTED_ACCOUNT'
 
@@ -76,6 +80,7 @@ export function watchNetworkStatus() {
         })
       })
       .then(response => {
+        dispatch(fetchPositions())
         dispatch(fetchNetworkStatusSuccess({
           connected: true,
           currentBlock: response.number,
