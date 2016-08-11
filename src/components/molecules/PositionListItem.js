@@ -72,7 +72,7 @@ class PositionListItem extends Component {
           <div className="voting-row">
             <Button
               onClick={this.vote.bind(this, this.props.position.sigAddr, true)}
-              bsStyle="success">
+              bsStyle={this.props.position.myVote === 'pro' ? 'success' : 'default'}>
               <Glyphicon glyph="thumbs-up" />
             </Button>
             <div className="voting-count">
@@ -84,7 +84,7 @@ class PositionListItem extends Component {
           <div className="voting-row">
             <Button
               onClick={this.vote.bind(this, this.props.position.sigAddr, false)}
-              bsStyle="danger">
+              bsStyle={this.props.position.myVote === 'against' ? 'danger' : 'default'}>
               <Glyphicon glyph="thumbs-down" />
             </Button>
             <div className="voting-count">
