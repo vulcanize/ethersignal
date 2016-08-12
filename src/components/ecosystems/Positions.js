@@ -114,7 +114,7 @@ class Positions extends Component {
         <PositionList
           fetching={this.props.positions.fetching}
           account={this.props.connection.account.selectedAccount}
-          items={positions.length ? positions[index] : []}
+          items={positions.length && positions[index].length ? positions[index] : []}
           dispatch={this.props.dispatch} />
       </Panel>
     )
