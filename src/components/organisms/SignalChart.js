@@ -61,7 +61,6 @@ class SignalChart extends Component {
         y={getY}
         yDomain={getYDomain(this.props.data)}
         stack>
-          <rect x="0" y="0" width="100%" height="100%" fill="#efefef" stroke="#999999" strokeWidth="2" />
           <line x1="0" y1="76" x2="300" y2="76" stroke="#999999" strokeWidth="2" />
           <line x1="290" x2="290" y1="20" y2="30" stroke="#5CB85C" strokeWidth="3" />
           <line x1="285" x2="295" y1="25" y2="25" stroke="#5CB85C" strokeWidth="3" />

@@ -80,10 +80,16 @@ class Positions extends Component {
 
   }
 
+
   render() {
 
     const positions = this.processPositions(this.props.positions.items)
-    const index = this.props.positions.pagination.currentPage - 1
+    let index = this.props.positions.pagination.currentPage - 1
+    if (positions.length < index) {
+      index = positions.length - 1
+    }
+    const positionsToRender = positions[index] || []
+    const pagination = Object.assign({}, this.props.positions.pagination, { currentPage: index + 1})
 
     return (
       <Panel header={[
@@ -100,7 +106,7 @@ class Positions extends Component {
       footer={
         <PositionPagination
           numberOfPages={positions.length}
-          pagination={this.props.positions.pagination}
+          pagination={pagination}
           dispatch={this.props.dispatch} />
       }>
         <PositionDepositModal
@@ -114,7 +120,7 @@ class Positions extends Component {
         <PositionList
           fetching={this.props.positions.fetching}
           account={this.props.connection.account.selectedAccount}
-          items={positions.length ? positions[index] : []}
+          items={positionsToRender}
           dispatch={this.props.dispatch} />
       </Panel>
     )
