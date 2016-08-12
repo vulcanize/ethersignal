@@ -66,135 +66,186 @@ export function fetchPositionsFailure(error) {
   }
 }
 
-export function fetchPositions() {
+/*
+ * @name getPositions
+ * @param {number} fromBlock
+ * @param {number} endBlock
+ * @description
+ * Makes a call to the positionRegistry ABI and returns positions contained in
+ * blocks ranging from ${fromBlock} to ${endBlock}
+ */
 
-  function calcPercent(A, B) {
-    const res = []
-    res[0] = Math.round(A * 100.0 / (A + B))
-    res[1] = Math.round(B * 100.0 / (A + B))
-    return res
-  }
+function getPositions(fromBlock, endBlock) {
+  return new Promise((resolve, reject) => {
+    positionRegistry.LogPosition({}, {fromBlock, endBlock})
+    .get((err, positions) => {
+      if (err) reject(err)
+      resolve(positions)
+    })
+  })
+}
 
-  function calcSignal(proMap, againstMap, position, deposit, block) {
+/*
+ * @name getPositionDeposit
+ * @param {object} position
+ * A position returned by #getPositions
+ * @description
+ * Calculates the current deposit (or amplitude) held at the signal address for
+ * a given position
+ */
 
-    let totalPro = 0
-    let totalAgainst = 0
-    let isMine = false
-    let iHaveSignalled = false
-    let myVote
+function getPositionDeposit(position) {
+  return new Promise((resolve, reject) => {
+    const block = web3.eth.getBlock(position.blockNumber)
+    const deposit = Number(web3.fromWei(
+      web3.eth.getBalance(position.args.sigAddr),
+      'finney'
+    ))
+    resolve(Object.assign({}, position, {block, deposit}))
+  })
+}
 
-    // Call getBalance once per address
-    for (const address in proMap) {
+/*
+ * @name getPositionVoteMaps
+ * @description
+ * Accepts a position object and collects signal transactions starting from
+ * the positions block number.
+ * @returns
+ * Position object with proMap and againstMap properties, which describe which
+ * accounts voted for and against the position.
+ */
 
-      const balance = web3.fromWei(web3.eth.getBalance(address))
-      proMap[address] = proMap[address] * balance
-      againstMap[address] = againstMap[address] * balance
+function getPositionVoteMaps(position) {
 
-      totalPro += parseFloat(proMap[address])
-      totalAgainst += parseFloat(againstMap[address])
+  const address = position.args.sigAddr
+  const etherSignal = etherSignalContract.at(address)
 
-      web3.eth.accounts.find(account => {
-        if (address === account) {
-          iHaveSignalled = true
-          if (proMap[address]) {
-            myVote = 'pro'
-          }
-          else if (againstMap[address]) {
-            myVote = 'against'
-          }
+  return new Promise((resolve, reject) => {
+
+    etherSignal.LogSignal({}, {fromBlock: position.blockNumber})
+    .get((error, signals) => {
+
+      if (error) {
+        reject(error)
+      }
+
+      const proMap = {}
+      const againstMap = {}
+
+      signals.forEach(signal => {
+        if (signal.args.pro) {
+          proMap[signal.args.addr] = 1
+          againstMap[signal.args.addr] = 0
+        }
+        else {
+          proMap[signal.args.addr] = 0
+          againstMap[signal.args.addr] = 1
         }
       })
 
+      resolve(Object.assign({}, position, {proMap, againstMap}))
+
+    })
+  })
+}
+
+/*
+ * @name calculateCurrentSignal
+ * @param {object} position
+ * A position object with properties proMap and againstMap, which are provided by
+ * #getPositionVoteMaps
+ * @description
+ * Iterates over addresses in proMap and againstMap and calculates their current
+ * account balance.
+ */
+
+function calculateCurrentSignal(position) {
+  return new Promise((resolve, reject) => {
+
+    position.totalPro = 0
+    position.totalAgainst = 0
+    position.isMine = false
+    position.iHaveSignalled = false
+    position.myVote
+
+    // Call getBalance once per address
+    for (const address in position.proMap) {
+
+      const balance = web3.fromWei(web3.eth.getBalance(address))
+      position.proMap[address] = position.proMap[address] * balance
+      position.againstMap[address] = position.againstMap[address] * balance
+
+      position.totalPro += parseFloat(position.proMap[address])
+      position.totalAgainst += parseFloat(position.againstMap[address])
+
+      web3.eth.accounts.find(account => {
+        if (address === account) {
+          position.iHaveSignalled = true
+          if (position.proMap[address]) {
+            position.myVote = 'pro'
+          }
+          else if (position.againstMap[address]) {
+            position.myVote = 'against'
+          }
+        }
+      })
     }
 
     for (const index in web3.eth.accounts) {
       if (web3.eth.accounts[index] === position.args.regAddr) {
-        isMine = true
+        position.isMine = true
       }
     }
 
-    return getPositionSignalHistory(position.args.sigAddr)
-    .then(history => {
+    resolve(position)
 
-      return {
-        title: position.args.title,
-        desc: position.args.text,
-        regAddr: position.args.regAddr,
-        pro: Math.round(totalPro),
-        against: Math.round(totalAgainst),
-        percent: calcPercent(totalPro, totalAgainst),
-        absoluteSignal: totalPro + Math.abs(totalAgainst),
-        sigAddr: position.args.sigAddr,
-        deposit: deposit,
-        creationDate: block.timestamp,
-        iHaveSignalled: iHaveSignalled,
-        isMine: isMine,
-        myVote: myVote,
-        history: history
-      }
+  })
+}
 
-    })
+/*
+ * @name #formatPosition
+ * @param {object} position
+ * @description
+ * Formats a position object after all the operations responsible for adding
+ * data have been completed.
+ */
 
+function formatPosition(position) {
+  return {
+    title: position.args.title,
+    desc: position.args.text,
+    regAddr: position.args.regAddr,
+    pro: Math.round(position.totalPro),
+    against: Math.round(position.totalAgainst),
+    absoluteSignal: position.totalPro + Math.abs(position.totalAgainst),
+    sigAddr: position.args.sigAddr,
+    deposit: position.deposit,
+    creationDate: position.block.timestamp,
+    iHaveSignalled: position.iHaveSignalled,
+    isMine: position.isMine,
+    myVote: position.myVote,
+    history: position.history
   }
+}
 
-  function getSignalList(position, deposit, block) {
-
-    const address = position.args.sigAddr
-    const etherSignal = etherSignalContract.at(address)
-
-    return new Promise((resolve, reject) => {
-      etherSignal
-      .LogSignal({}, {fromBlock: position.blockNumber})
-      .get((error, signals) => {
-
-        if (error) {
-          reject(error)
-        }
-
-        const proMap = {}
-        const againstMap = {}
-
-        signals.forEach(signal => {
-
-          if (signal.args.pro) {
-            proMap[signal.args.addr] = 1
-            againstMap[signal.args.addr] = 0
-          }
-
-          else {
-            proMap[signal.args.addr] = 0
-            againstMap[signal.args.addr] = 1
-          }
-
-        })
-
-        resolve(calcSignal(proMap, againstMap, position, deposit, block))
-
-      })
-    })
-
-  }
-
+export function fetchPositions(fromBlock = 1200000, endBlock) {
   return dispatch => {
     dispatch(fetchPositionsRequest())
-
-    return new Promise((resolve, reject) => {
-      positionRegistry
-      .LogPosition({}, { fromBlock: 1200000 }) // magic number?
-      .get((err, positions) => {
-        if (err) reject(err)
-        resolve(positions)
-      })
+    getPositions(fromBlock, endBlock)
+    .then(positions => {
+      return Promise.all(positions.map(position => getPositionDeposit(position)))
     })
     .then(positions => {
-      return Promise.all(positions.map(position => {
-        const block = web3.eth.getBlock(position.blockNumber)
-        const deposit = Number(web3.fromWei(
-          web3.eth.getBalance(position.args.sigAddr),
-          'finney'
-        ))
-        return getSignalList(position, deposit, block)
-      }))
+      return Promise.all(positions.map(position => getPositionVoteMaps(position)))
+    })
+    .then(positions => {
+      return Promise.all(positions.map(position => calculateCurrentSignal(position)))
+    })
+    .then(positions => {
+      return Promise.all(positions.map(position => fetchHistoricalSignal(position)))
+    })
+    .then(positions => {
+      return positions.map(position => formatPosition(position))
     })
     .then(positions => {
       dispatch(fetchPositionsSuccess(positions))
@@ -203,7 +254,6 @@ export function fetchPositions() {
       dispatch(fetchPositionsFailure(error))
     })
   }
-
 }
 
 export const VOTE_ON_POSITION_REQUEST = 'VOTE_ON_POSITION_REQUEST'
@@ -534,7 +584,9 @@ export function getPositionSignalHistoryFailure(error) {
   }
 }
 
-export function getPositionSignalHistory(contractAddress, opts) {
+export function fetchHistoricalSignal(position, opts) {
+
+  const contractAddress = position.args.sigAddr
 
   const URL = 'http://testnet.etherscan.io/api'
 
@@ -559,6 +611,11 @@ export function getPositionSignalHistory(contractAddress, opts) {
   })
   .then(response => response.json())
   .then(response => {
+
+    if (response.message === 'NOTOK') {
+      throw 'There was an error with the testnet API.'
+    }
+
     return Promise.all(
 
       response.result.map(transaction => {
@@ -586,6 +643,13 @@ export function getPositionSignalHistory(contractAddress, opts) {
   })
   .then(response => {
     return getSignalPerBlock(response)
+  })
+  .then(history => {
+    return Object.assign({}, position, {history})
+  })
+  .catch(error => {
+    // Recover from an error by passing an empty history
+    return Object.assign({}, position, {history: []})
   })
 
 }
