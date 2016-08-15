@@ -536,20 +536,16 @@ export function getPositionSignalHistoryFailure(error) {
 
 export function getPositionSignalHistory(contractAddress, opts) {
 
-  const URL = 'http://testnet.etherscan.io/api'
+  const URL = `https://ethersignal-api.herokuapp.com/transaction/${contractAddress}`
 
   if (!opts) {
     opts = {}
   }
 
   const params = {
-    module: 'account',
-    action: 'txlist',
-    address: contractAddress,
     startblock: opts.startblock || 0,
     endblock: opts.endblock || 99999999,
-    sort: opts.sort || 'asc',
-    apikey: API_KEY
+    sort: opts.sort || 'asc'
   }
 
   const query = querystring.stringify(params)
@@ -559,6 +555,7 @@ export function getPositionSignalHistory(contractAddress, opts) {
   })
   .then(response => response.json())
   .then(response => {
+
     return Promise.all(
 
       response.result.map(transaction => {
