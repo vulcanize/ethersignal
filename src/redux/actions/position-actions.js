@@ -392,30 +392,34 @@ export function submitNewPosition(title, description, account) {
   // Todo: there should be an account selector
   const sender = account
   const data = positionRegistry.registerPosition.getData(title, description)
-  const gas = web3.eth.estimateGas({from: sender, to: address, data: data})
 
   return dispatch => {
     dispatch(submitNewPositionRequest())
-    try {
-      positionRegistry.registerPosition.sendTransaction(
-        {
+    web3.eth.estimateGas({from: sender, to: address, data: data}, (err, gas) => {
+      try {
+        positionRegistry.registerPosition.sendTransaction(
           title,
           description,
-          from: sender,
-          to: address,
-          gas: gas
-        },
-        (err, result) => {
-          if (err) throw err
-          dispatch(addTimedAlert('The position was submitted!', 'success'))
-          dispatch(submitNewPositionSuccess(result))
-        }
-      )
-    }
-    catch (error) {
-      dispatch(addTimedAlert(error.message, 'danger'))
-      dispatch(submitNewPositionFailure(error))
-    }
+          {
+            from: sender,
+            to: address,
+            gas: gas
+          },
+          (err, result) => {
+            if (err) throw err
+            dispatch(addTimedAlert('The position was submitted!', 'success'))
+            dispatch(submitNewPositionSuccess(result))
+          }
+        )
+      }
+
+      catch (error) {
+        dispatch(addTimedAlert(error.message, 'danger'))
+        dispatch(submitNewPositionFailure(error))
+      }
+
+    })
+
   }
 
 }
