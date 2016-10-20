@@ -1,6 +1,0 @@
-{
-  "extends": "trails/react",
-  "parserOptions": {
-    "sourceType": "module"
-  }
-}
