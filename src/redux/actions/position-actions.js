@@ -1,6 +1,7 @@
 import querystring from 'querystring'
 import fetch from 'isomorphic-fetch'
 import getSignalPerBlock from './utils/getSignalPerBlock'
+import _ from 'lodash'
 
 /*
  * connection to local blockchain node.
@@ -158,38 +159,47 @@ function getPositionVoteMaps(position) {
  */
 
 function calculateCurrentSignal(position) {
-  return new Promise((resolve, reject) => {
 
-    position.totalPro = 0
-    position.totalAgainst = 0
-    position.isMine = false
-    position.iHaveSignalled = false
-    position.myVote
+  position.totalPro = 0
+  position.totalAgainst = 0
+  position.isMine = false
+  position.iHaveSignalled = false
+  position.myVote
 
-    // Call getBalance once per address
-    for (const address in position.proMap) {
+  return Promise.all(
+    _.map(position.proMap, (key, address) => {
+      return new Promise((resolve, reject) => {
+        web3.eth.getBalance(address, (err, balance) => {
 
-      const balance = web3.fromWei(web3.eth.getBalance(address))
+          balance = web3.fromWei(balance)
 
-      position.proMap[address] = position.proMap[address] * balance
-      position.againstMap[address] = position.againstMap[address] * balance
+          position.proMap[address] = position.proMap[address] * balance
+          position.againstMap[address] = position.againstMap[address] * balance
 
-      position.totalPro += parseFloat(position.proMap[address])
-      position.totalAgainst += parseFloat(position.againstMap[address])
+          position.totalPro += parseFloat(position.proMap[address])
+          position.totalAgainst += parseFloat(position.againstMap[address])
 
-      web3.eth.accounts.find(account => {
-        if (address === account) {
-          position.iHaveSignalled = true
-          if (position.proMap[address]) {
-            position.myVote = 'pro'
-          }
-          else if (position.againstMap[address]) {
-            position.myVote = 'against'
-          }
-        }
+          web3.eth.accounts.find(account => {
+            if (address === account) {
+              position.iHaveSignalled = true
+              if (position.proMap[address]) {
+                position.myVote = 'pro'
+              }
+              else if (position.againstMap[address]) {
+                position.myVote = 'against'
+              }
+            }
+          })
+
+        })
+
+        resolve()
+
       })
 
-    }
+    })
+  )
+  .then(() => {
 
     for (const index in web3.eth.accounts) {
       if (web3.eth.accounts[index] === position.args.regAddr) {
@@ -197,9 +207,10 @@ function calculateCurrentSignal(position) {
       }
     }
 
-    resolve(position)
+    return position
 
   })
+
 }
 
 /*
