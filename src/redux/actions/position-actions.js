@@ -94,12 +94,12 @@ function getPositions(fromBlock, endBlock) {
 
 function getPositionDeposit(position) {
   return new Promise((resolve, reject) => {
-    const block = web3.eth.getBlock(position.blockNumber)
-    const deposit = Number(web3.fromWei(
-      web3.eth.getBalance(position.args.sigAddr),
-      'finney'
-    ))
-    resolve(Object.assign({}, position, {block, deposit}))
+    web3.eth.getBlock(position.blockNumber, (err, block) => {
+      web3.eth.getBalance(position.args.sigAddr, (err, balance) => {
+        const deposit = Number(web3.fromWei(balance, 'finney'))
+        resolve(Object.assign({}, position, {block, deposit}))
+      })
+    })
   })
 }
 
@@ -170,6 +170,7 @@ function calculateCurrentSignal(position) {
     for (const address in position.proMap) {
 
       const balance = web3.fromWei(web3.eth.getBalance(address))
+
       position.proMap[address] = position.proMap[address] * balance
       position.againstMap[address] = position.againstMap[address] * balance
 
@@ -187,6 +188,7 @@ function calculateCurrentSignal(position) {
           }
         }
       })
+
     }
 
     for (const index in web3.eth.accounts) {
