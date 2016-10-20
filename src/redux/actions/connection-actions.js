@@ -7,7 +7,7 @@ else if (typeof Web3 !== 'undefined') {
   web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'))
   if (!web3.isConnected()) {
     const Web3 = require('web3')
-    web3 = new Web3(new Web3.providers.HttpProvider('https://signal.ether.ai/proxy'))
+    web3 = new Web3(new Web3.providers.HttpProvider('http://rpc.ethapi.org:8545'))
   }
 }
 
