@@ -1,6 +1,5 @@
 import React, { PropTypes, Component } from 'react'
 import './../../styles/environments/Frame.css'
-import { browserHistory } from 'react-router'
 
 import {
   Navbar,
@@ -16,13 +15,14 @@ import { routes } from './../../index'
 class Frame extends Component {
 
   handleSelect(selectedKey) {
-    browserHistory.push(routes[selectedKey].path)
+    this.props.history.push(routes[selectedKey].path)
   }
 
   getActiveRouteIndex() {
-    const path = window.location.pathname
+    let hash = window.location.hash
+    hash = hash.substring(hash.indexOf('#') + 1, hash.indexOf('?'))
     return routes.findIndex(route => {
-      return route.path === path
+      return hash === route.path
     })
   }
 
