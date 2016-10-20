@@ -397,13 +397,20 @@ export function submitNewPosition(title, description, account) {
   return dispatch => {
     dispatch(submitNewPositionRequest())
     try {
-      const result = positionRegistry.registerPosition.sendTransaction(
-        title,
-        description,
-        { from: sender, to: address, gas: gas }
+      positionRegistry.registerPosition.sendTransaction(
+        {
+          title,
+          description,
+          from: sender,
+          to: address,
+          gas: gas
+        },
+        (err, result) => {
+          if (err) throw err
+          dispatch(addTimedAlert('The position was submitted!', 'success'))
+          dispatch(submitNewPositionSuccess(result))
+        }
       )
-      dispatch(addTimedAlert('The position was submitted!', 'success'))
-      dispatch(submitNewPositionSuccess(result))
     }
     catch (error) {
       dispatch(addTimedAlert(error.message, 'danger'))

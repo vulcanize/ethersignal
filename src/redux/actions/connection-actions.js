@@ -72,7 +72,6 @@ export function watchNetworkStatus() {
     const latestStatus = web3.eth.filter('latest')
 
     latestStatus.watch((err, blockHash) => {
-
       return new Promise((resolve, reject) => {
         web3.eth.getBlock(blockHash, false, function(err, block) {
           if (err) reject(err)
