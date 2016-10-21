@@ -13,12 +13,15 @@ import etherSignalAbi from './abi/etherSignalAbi'
 import positionRegistryAbi from './abi/positionRegistryAbi'
 
 if (typeof web3 !== 'undefined' && typeof Web3 !== 'undefined') {
+  // eslint-disable-next-line
   web3 = new Web3(web3.currentProvider)
 }
 else if (typeof Web3 !== 'undefined') {
+  // eslint-disable-next-line
   web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'))
   if (!web3.isConnected()) {
     const Web3 = require('web3')
+    // eslint-disable-next-line
     web3 = new Web3(new Web3.providers.HttpProvider('http://rpc.ethapi.org:8545'))
   }
 }
@@ -164,7 +167,7 @@ function calculateCurrentSignal(position) {
   position.totalAgainst = 0
   position.isMine = false
   position.iHaveSignalled = false
-  position.myVote
+  position.myVote = null
 
   return Promise.all(
     _.map(position.proMap, (key, address) => {
@@ -173,12 +176,13 @@ function calculateCurrentSignal(position) {
 
           balance = web3.fromWei(balance)
 
-          position.proMap[address] = position.proMap[address] * balance
-          position.againstMap[address] = position.againstMap[address] * balance
+          position.proMap[address] *= balance
+          position.againstMap[address] *= balance
 
           position.totalPro += parseFloat(position.proMap[address])
           position.totalAgainst += parseFloat(position.againstMap[address])
 
+          // eslint-disable-next-line
           web3.eth.accounts.find(account => {
             if (address === account) {
               position.iHaveSignalled = true
@@ -302,12 +306,12 @@ export function voteOnPosition(positionSignalAddress, vote) {
     Promise.all(
       web3.eth.accounts.map(account => {
         return new Promise((resolve, reject) => {
-          try {
-            resolve(etherSignal.setSignal(vote, {from: account}))
-          }
-          catch (err) {
-            reject(err)
-          }
+          etherSignal.setSignal(vote, {from: account}, (err, result) => {
+            if (err) {
+              reject(err.message)
+            }
+            resolve(result)
+          })
         })
       })
     )
@@ -316,7 +320,7 @@ export function voteOnPosition(positionSignalAddress, vote) {
       dispatch(voteOnPositionSuccess(response))
     })
     .catch(error => {
-      dispatch(addTimedAlert(error.message, 'danger'))
+      dispatch(addTimedAlert('Your vote was not submited.', 'danger'))
       dispatch(voteOnPositionFailure(error))
     })
   }
@@ -396,30 +400,26 @@ export function submitNewPosition(title, description, account) {
   return dispatch => {
     dispatch(submitNewPositionRequest())
     web3.eth.estimateGas({from: sender, to: address, data: data}, (err, gas) => {
-      try {
-        positionRegistry.registerPosition.sendTransaction(
-          title,
-          description,
-          {
-            from: sender,
-            to: address,
-            gas: gas
-          },
-          (err, result) => {
-            if (err) throw err
+      positionRegistry.registerPosition.sendTransaction(
+        title,
+        description,
+        {
+          from: sender,
+          to: address,
+          gas: gas
+        },
+        (err, result) => {
+          if (err) {
+            dispatch(addTimedAlert('The position was not submitted.', 'danger'))
+            dispatch(submitNewPositionFailure(err))
+          }
+          else {
             dispatch(addTimedAlert('The position was submitted!', 'success'))
             dispatch(submitNewPositionSuccess(result))
           }
-        )
-      }
-
-      catch (error) {
-        dispatch(addTimedAlert(error.message, 'danger'))
-        dispatch(submitNewPositionFailure(error))
-      }
-
+        }
+      )
     })
-
   }
 
 }
@@ -564,17 +564,17 @@ export function addPositionDeposit(value, denomination, senderAddr, recipientAdd
         from: senderAddr,
         to: recipientAddr
       }, (err, result) => {
-        if (err) reject(err)
+        if (err) reject('The deposit was not submitted.')
         resolve(result)
       })
     })
     .then(response => {
-      dispatch(addTimedAlert('The deposit was submitted successfully', 'success'))
+      dispatch(addTimedAlert('The deposit was submitted successfully!', 'success'))
       dispatch(hidePositionDepositModal())
       dispatch(addPositionDepositSuccess(response))
     })
     .catch(error => {
-      dispatch(addTimedAlert('The transaction was not confirmed', 'danger'))
+      dispatch(addTimedAlert('The deposit was not submitted.', 'danger'))
       dispatch(hidePositionDepositModal())
       dispatch(addPositionDepositFailure(error))
     })
@@ -631,7 +631,7 @@ export function fetchHistoricalSignal(position, opts) {
   .then(response => {
 
     if (response.message === 'NOTOK') {
-      throw 'There was an error with the testnet API.'
+      throw Error('There was an error with the testnet API.')
     }
 
     return Promise.all(

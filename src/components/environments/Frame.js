@@ -34,7 +34,7 @@ class Frame extends Component {
         <Navbar fluid>
           <Navbar.Header>
             <Navbar.Brand>
-              <img className="app-header-logo" src={logo} />
+              <img alt="ethersignal logo" className="app-header-logo" src={logo} />
               <a onClick={this.handleSelect.bind(this, 0)}>EtherSignal</a>
             </Navbar.Brand>
           </Navbar.Header>

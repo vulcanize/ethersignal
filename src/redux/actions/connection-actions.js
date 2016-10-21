@@ -1,12 +1,15 @@
 /* global Web3, web3 */
 
 if (typeof web3 !== 'undefined' && typeof Web3 !== 'undefined') {
+  // eslint-disable-next-line
   web3 = new Web3(web3.currentProvider)
 }
 else if (typeof Web3 !== 'undefined') {
+  // eslint-disable-next-line
   web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'))
   if (!web3.isConnected()) {
     const Web3 = require('web3')
+    // eslint-disable-next-line
     web3 = new Web3(new Web3.providers.HttpProvider('http://rpc.ethapi.org:8545'))
   }
 }
