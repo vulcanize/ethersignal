@@ -1,8 +1,8 @@
 {
-  "name": "ethersignal-ghpages",
+  "name": "ethersignal-1",
   "version": "0.0.1",
   "private": true,
-  "homepage": "http://wbprice.github.io/ethersignal-ghpages",
+  "homepage": "http://vulcanize.github.io/ethersignal-1",
   "devDependencies": {
     "eslint": "^3.8.1",
     "eslint-config-trails": "^1.0.7",

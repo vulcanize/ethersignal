@@ -13,12 +13,15 @@ import etherSignalAbi from './abi/etherSignalAbi'
 import positionRegistryAbi from './abi/positionRegistryAbi'
 
 if (typeof web3 !== 'undefined' && typeof Web3 !== 'undefined') {
+  // eslint-disable-next-line
   web3 = new Web3(web3.currentProvider)
 }
 else if (typeof Web3 !== 'undefined') {
+  // eslint-disable-next-line
   web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'))
   if (!web3.isConnected()) {
     const Web3 = require('web3')
+    // eslint-disable-next-line
     web3 = new Web3(new Web3.providers.HttpProvider('http://rpc.ethapi.org:8545'))
   }
 }
@@ -164,7 +167,7 @@ function calculateCurrentSignal(position) {
   position.totalAgainst = 0
   position.isMine = false
   position.iHaveSignalled = false
-  position.myVote
+  position.myVote = null
 
   return Promise.all(
     _.map(position.proMap, (key, address) => {
@@ -173,12 +176,13 @@ function calculateCurrentSignal(position) {
 
           balance = web3.fromWei(balance)
 
-          position.proMap[address] = position.proMap[address] * balance
-          position.againstMap[address] = position.againstMap[address] * balance
+          position.proMap[address] *= balance
+          position.againstMap[address] *= balance
 
           position.totalPro += parseFloat(position.proMap[address])
           position.totalAgainst += parseFloat(position.againstMap[address])
 
+          // eslint-disable-next-line
           web3.eth.accounts.find(account => {
             if (address === account) {
               position.iHaveSignalled = true
@@ -631,7 +635,7 @@ export function fetchHistoricalSignal(position, opts) {
   .then(response => {
 
     if (response.message === 'NOTOK') {
-      throw 'There was an error with the testnet API.'
+      throw Error('There was an error with the testnet API.')
     }
 
     return Promise.all(
