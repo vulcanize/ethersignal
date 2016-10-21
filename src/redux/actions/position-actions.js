@@ -1,6 +1,7 @@
 import querystring from 'querystring'
 import fetch from 'isomorphic-fetch'
 import getSignalPerBlock from './utils/getSignalPerBlock'
+import _ from 'lodash'
 
 /*
  * connection to local blockchain node.
@@ -94,12 +95,12 @@ function getPositions(fromBlock, endBlock) {
 
 function getPositionDeposit(position) {
   return new Promise((resolve, reject) => {
-    const block = web3.eth.getBlock(position.blockNumber)
-    const deposit = Number(web3.fromWei(
-      web3.eth.getBalance(position.args.sigAddr),
-      'finney'
-    ))
-    resolve(Object.assign({}, position, {block, deposit}))
+    web3.eth.getBlock(position.blockNumber, (err, block) => {
+      web3.eth.getBalance(position.args.sigAddr, (err, balance) => {
+        const deposit = Number(web3.fromWei(balance, 'finney'))
+        resolve(Object.assign({}, position, {block, deposit}))
+      })
+    })
   })
 }
 
@@ -158,36 +159,47 @@ function getPositionVoteMaps(position) {
  */
 
 function calculateCurrentSignal(position) {
-  return new Promise((resolve, reject) => {
 
-    position.totalPro = 0
-    position.totalAgainst = 0
-    position.isMine = false
-    position.iHaveSignalled = false
-    position.myVote
+  position.totalPro = 0
+  position.totalAgainst = 0
+  position.isMine = false
+  position.iHaveSignalled = false
+  position.myVote
 
-    // Call getBalance once per address
-    for (const address in position.proMap) {
+  return Promise.all(
+    _.map(position.proMap, (key, address) => {
+      return new Promise((resolve, reject) => {
+        web3.eth.getBalance(address, (err, balance) => {
 
-      const balance = web3.fromWei(web3.eth.getBalance(address))
-      position.proMap[address] = position.proMap[address] * balance
-      position.againstMap[address] = position.againstMap[address] * balance
+          balance = web3.fromWei(balance)
 
-      position.totalPro += parseFloat(position.proMap[address])
-      position.totalAgainst += parseFloat(position.againstMap[address])
+          position.proMap[address] = position.proMap[address] * balance
+          position.againstMap[address] = position.againstMap[address] * balance
 
-      web3.eth.accounts.find(account => {
-        if (address === account) {
-          position.iHaveSignalled = true
-          if (position.proMap[address]) {
-            position.myVote = 'pro'
-          }
-          else if (position.againstMap[address]) {
-            position.myVote = 'against'
-          }
-        }
+          position.totalPro += parseFloat(position.proMap[address])
+          position.totalAgainst += parseFloat(position.againstMap[address])
+
+          web3.eth.accounts.find(account => {
+            if (address === account) {
+              position.iHaveSignalled = true
+              if (position.proMap[address]) {
+                position.myVote = 'pro'
+              }
+              else if (position.againstMap[address]) {
+                position.myVote = 'against'
+              }
+            }
+          })
+
+        })
+
+        resolve()
+
       })
-    }
+
+    })
+  )
+  .then(() => {
 
     for (const index in web3.eth.accounts) {
       if (web3.eth.accounts[index] === position.args.regAddr) {
@@ -195,9 +207,10 @@ function calculateCurrentSignal(position) {
       }
     }
 
-    resolve(position)
+    return position
 
   })
+
 }
 
 /*
@@ -379,23 +392,34 @@ export function submitNewPosition(title, description, account) {
   // Todo: there should be an account selector
   const sender = account
   const data = positionRegistry.registerPosition.getData(title, description)
-  const gas = web3.eth.estimateGas({from: sender, to: address, data: data})
 
   return dispatch => {
     dispatch(submitNewPositionRequest())
-    try {
-      const result = positionRegistry.registerPosition.sendTransaction(
-        title,
-        description,
-        { from: sender, to: address, gas: gas }
-      )
-      dispatch(addTimedAlert('The position was submitted!', 'success'))
-      dispatch(submitNewPositionSuccess(result))
-    }
-    catch (error) {
-      dispatch(addTimedAlert(error.message, 'danger'))
-      dispatch(submitNewPositionFailure(error))
-    }
+    web3.eth.estimateGas({from: sender, to: address, data: data}, (err, gas) => {
+      try {
+        positionRegistry.registerPosition.sendTransaction(
+          title,
+          description,
+          {
+            from: sender,
+            to: address,
+            gas: gas
+          },
+          (err, result) => {
+            if (err) throw err
+            dispatch(addTimedAlert('The position was submitted!', 'success'))
+            dispatch(submitNewPositionSuccess(result))
+          }
+        )
+      }
+
+      catch (error) {
+        dispatch(addTimedAlert(error.message, 'danger'))
+        dispatch(submitNewPositionFailure(error))
+      }
+
+    })
+
   }
 
 }
