@@ -1,7 +1,7 @@
 import React from 'react'
 import {render} from 'react-dom'
 
-import { Router, Route, browserHistory, IndexRoute } from 'react-router'
+import { Router, Route, hashHistory, IndexRoute } from 'react-router'
 
 import { Provider } from 'react-redux'
 import { createStore,  applyMiddleware } from 'redux'
@@ -38,7 +38,7 @@ store.dispatch(getAccounts())
 
 render(
   <Provider store={store}>
-    <Router history={browserHistory}>
+    <Router history={hashHistory}>
       <Route path="/" component={Frame}>
         <IndexRoute component={Home} />
         {
