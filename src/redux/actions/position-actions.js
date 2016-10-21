@@ -306,12 +306,12 @@ export function voteOnPosition(positionSignalAddress, vote) {
     Promise.all(
       web3.eth.accounts.map(account => {
         return new Promise((resolve, reject) => {
-          try {
-            resolve(etherSignal.setSignal(vote, {from: account}))
-          }
-          catch (err) {
-            reject(err)
-          }
+          etherSignal.setSignal(vote, {from: account}, (err, result) => {
+            if (err) {
+              reject(err.message)
+            }
+            resolve(result)
+          })
         })
       })
     )
@@ -320,7 +320,7 @@ export function voteOnPosition(positionSignalAddress, vote) {
       dispatch(voteOnPositionSuccess(response))
     })
     .catch(error => {
-      dispatch(addTimedAlert(error.message, 'danger'))
+      dispatch(addTimedAlert('Your vote was not submited.', 'danger'))
       dispatch(voteOnPositionFailure(error))
     })
   }
@@ -400,30 +400,26 @@ export function submitNewPosition(title, description, account) {
   return dispatch => {
     dispatch(submitNewPositionRequest())
     web3.eth.estimateGas({from: sender, to: address, data: data}, (err, gas) => {
-      try {
-        positionRegistry.registerPosition.sendTransaction(
-          title,
-          description,
-          {
-            from: sender,
-            to: address,
-            gas: gas
-          },
-          (err, result) => {
-            if (err) throw err
+      positionRegistry.registerPosition.sendTransaction(
+        title,
+        description,
+        {
+          from: sender,
+          to: address,
+          gas: gas
+        },
+        (err, result) => {
+          if (err) {
+            dispatch(addTimedAlert('The position was not submitted.', 'danger'))
+            dispatch(submitNewPositionFailure(err))
+          }
+          else {
             dispatch(addTimedAlert('The position was submitted!', 'success'))
             dispatch(submitNewPositionSuccess(result))
           }
-        )
-      }
-
-      catch (error) {
-        dispatch(addTimedAlert(error.message, 'danger'))
-        dispatch(submitNewPositionFailure(error))
-      }
-
+        }
+      )
     })
-
   }
 
 }
@@ -568,17 +564,17 @@ export function addPositionDeposit(value, denomination, senderAddr, recipientAdd
         from: senderAddr,
         to: recipientAddr
       }, (err, result) => {
-        if (err) reject(err)
+        if (err) reject('The deposit was not submitted.')
         resolve(result)
       })
     })
     .then(response => {
-      dispatch(addTimedAlert('The deposit was submitted successfully', 'success'))
+      dispatch(addTimedAlert('The deposit was submitted successfully!', 'success'))
       dispatch(hidePositionDepositModal())
       dispatch(addPositionDepositSuccess(response))
     })
     .catch(error => {
-      dispatch(addTimedAlert('The transaction was not confirmed', 'danger'))
+      dispatch(addTimedAlert('The deposit was not submitted.', 'danger'))
       dispatch(hidePositionDepositModal())
       dispatch(addPositionDepositFailure(error))
     })
